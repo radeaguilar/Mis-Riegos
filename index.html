@@ -1,0 +1,2365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Mis Riegos y Tratamientos</title>
+<!-- PWA -->
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#14532d"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Mis Riegos"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--vd:#14532d;--vm:#16a34a;--vc:#4ade80;--vp:#bbf7d0;--vmp:#f0fdf4;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-tap-highlight-color:transparent;}
+body{font-family:'DM Sans',sans-serif;background:#f8fafc;color:#111827;min-height:100vh;font-size:16px;}
+/* HEADER */
+.hdr{background:linear-gradient(145deg,#14532d 0%,#15803d 60%,#16a34a 100%);padding:1.4rem 1.2rem 2.5rem;position:relative;overflow:hidden;}
+.hdr::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:36px;background:#f8fafc;border-radius:50% 50% 0 0/100% 100% 0 0;}
+.hdr-ilu{position:absolute;right:-10px;top:-5px;opacity:0.15;pointer-events:none;}
+.hdr-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:1.1rem;position:relative;}
+.hdr-logo{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,0.18);border:1.5px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+h1{font-family:'Fraunces',serif;font-size:26px;color:white;font-weight:700;line-height:1.1;}
+.hdr-sub{font-size:13px;color:#bbf7d0;margin-top:3px;}
+/* Stats grid 2x2 */
+.hdr-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:relative;}
+.stat-card{background:rgba(255,255,255,0.13);border:1.5px solid rgba(255,255,255,0.2);border-radius:14px;padding:10px 12px;}
+.stat-label{font-size:11px;color:#bbf7d0;margin-bottom:3px;font-weight:500;}
+.stat-val{font-size:22px;font-family:'Fraunces',serif;color:white;font-weight:700;line-height:1;}
+/* Cultivos desglosados */
+.stat-cultivos{grid-column:span 2;background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.18);border-radius:14px;padding:10px 12px;}
+.stat-cultivos-title{font-size:11px;color:#bbf7d0;font-weight:500;margin-bottom:8px;}
+.cultivo-breakdown{display:flex;flex-wrap:wrap;gap:6px;}
+.cb-item{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.12);border-radius:8px;padding:5px 9px;}
+.cb-ico{font-size:14px;line-height:1;}
+.cb-name{font-size:12px;color:rgba(255,255,255,0.85);font-weight:500;}
+.cb-nums{font-size:12px;color:white;font-weight:700;}
+/* CAMPAIGN BAR */
+.camp-bar{background:white;border-bottom:2px solid #e2e8f0;padding:.65rem 1.2rem;display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.camp-label{font-size:13px;font-weight:700;color:#374151;}
+.camp-select{border:2px solid #d1fae5;border-radius:8px;padding:5px 10px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;background:#f0fdf4;color:#14532d;outline:none;-webkit-appearance:none;appearance:none;}
+.camp-new{margin-left:auto;padding:6px 14px;border-radius:8px;border:2px solid #bbf7d0;background:#f0fdf4;color:#15803d;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:700;cursor:pointer;}
+.camp-new:hover{background:#dcfce7;}
+.body{padding:1.1rem;max-width:500px;margin:0 auto;}
+.tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:1.2rem;}
+.tab{padding:10px 4px;border-radius:14px;border:2px solid #d1fae5;background:white;color:#15803d;font-size:15px;font-family:'DM Sans',sans-serif;font-weight:800;cursor:pointer;text-align:center;transition:all .15s;line-height:1.25;letter-spacing:-.01em;}
+.tab.active{background:linear-gradient(135deg,#14532d,#15803d);border-color:transparent;color:white;box-shadow:0 4px 14px rgba(21,128,61,.35);}
+.tab.tab-trat{border-color:#fde68a;color:#92400e;}
+.tab.tab-trat.active{background:linear-gradient(135deg,#d97706,#f59e0b);border-color:transparent;color:white;box-shadow:0 4px 14px rgba(217,119,6,.4);}
+/* ===== TRATAMIENTOS ===== */
+.trat-fecha-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin-bottom:1rem;}
+.dia-badge{background:linear-gradient(135deg,#fef3c7,#fde68a);border:2px solid #f59e0b;border-radius:12px;padding:11px 12px;font-size:14px;font-weight:800;color:#78350f;white-space:nowrap;text-align:center;min-width:80px;}
+.prod-wrap{position:relative;margin-bottom:.75rem;}
+.prod-sugg{position:absolute;left:0;right:0;top:100%;background:white;border:2px solid #fde68a;border-top:none;border-radius:0 0 12px 12px;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,.12);overflow:hidden;}
+.prod-sugg-item{padding:12px 14px;cursor:pointer;border-bottom:1px solid #fef3c7;display:flex;justify-content:space-between;align-items:center;-webkit-tap-highlight-color:transparent;}
+.prod-sugg-item:last-child{border-bottom:none;}
+.prod-sugg-item:active{background:#fef9c3;}
+.prod-si-nom{font-size:15px;font-weight:700;color:#111827;}
+.prod-si-dos{font-size:12px;color:#92400e;font-weight:600;background:#fef3c7;padding:2px 8px;border-radius:99px;}
+.dosis-row{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fde68a;border-radius:12px;padding:10px 14px;margin-bottom:1rem;}
+.dosis-ico{font-size:20px;}
+.dosis-info{flex:1;}
+.dosis-label{font-size:10px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.06em;}
+.dosis-val-wrap{display:flex;align-items:baseline;gap:4px;}
+.dosis-input{border:none;background:transparent;font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:#b45309;outline:none;width:90px;-webkit-appearance:none;}
+.dosis-utext{font-size:13px;color:#92400e;font-weight:700;}
+.unit-toggle{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:1rem;}
+.unit-btn{padding:10px;border-radius:10px;border:2px solid #e5e7eb;background:white;font-size:14px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;text-align:center;color:#6b7280;transition:all .15s;}
+.unit-btn.sel{border-color:#d97706;background:#fef3c7;color:#78350f;}
+.cuba-card{background:#fafaf9;border:2px solid #fde68a;border-radius:14px;padding:1rem;margin-top:.75rem;}
+.cuba-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;}
+.cuba-title{font-family:'Fraunces',serif;font-size:15px;font-weight:700;color:#78350f;}
+.cuba-del-btn{background:#fee2e2;border:2px solid #fecaca;border-radius:8px;cursor:pointer;color:#dc2626;font-size:13px;font-weight:700;padding:5px 10px;font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent;}
+.cant-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:.75rem;}
+.cant-input{width:100%;border:2px solid #fde68a;border-radius:10px;padding:11px 14px;font-size:20px;font-family:'Fraunces',serif;font-weight:700;color:#78350f;background:#fffbeb;outline:none;-webkit-appearance:none;text-align:center;}
+.cant-input:focus{border-color:#d97706;background:white;}
+.cant-select{border:2px solid #fde68a;border-radius:10px;padding:10px 10px;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;background:#fffbeb;color:#78350f;outline:none;-webkit-appearance:none;appearance:none;min-width:60px;}
+.parc-label{font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;display:block;}
+.tags-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;min-height:4px;}
+.ptag{background:#fef3c7;border:1.5px solid #fde68a;border-radius:99px;padding:5px 6px 5px 12px;display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:700;color:#78350f;}
+.ptag-x{background:rgba(0,0,0,0.08);border:none;border-radius:50%;width:18px;height:18px;cursor:pointer;color:#78350f;font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
+.tag-row{display:grid;grid-template-columns:1fr 70px auto;gap:6px;align-items:stretch;}
+.tag-inp{border:2px solid #fde68a;border-radius:10px;padding:9px 10px;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:600;background:#fffbeb;color:#111827;outline:none;min-width:0;}
+.tag-inp:focus{border-color:#d97706;background:white;}
+.ha-inp{border:2px solid #fde68a;border-radius:10px;padding:9px 6px;font-size:14px;font-family:'Fraunces',serif;font-weight:700;background:#fffbeb;color:#78350f;outline:none;text-align:center;-webkit-appearance:none;min-width:0;}
+.ha-inp:focus{border-color:#d97706;background:white;}
+.ha-inp::placeholder{font-family:'DM Sans',sans-serif;font-size:12px;color:#d97706;font-weight:600;}
+.tag-add-btn{padding:9px 12px;border-radius:10px;border:2px solid #d97706;background:linear-gradient(135deg,#fef3c7,#fde68a);color:#78350f;font-size:18px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;flex-shrink:0;}
+.ha-total{font-size:11px;font-weight:700;color:#92400e;text-align:right;margin-top:4px;}
+.add-cuba-btn{width:100%;margin-top:.75rem;padding:14px;border-radius:14px;border:2.5px dashed #fde68a;background:white;color:#d97706;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s;}
+.add-cuba-btn:hover,.add-cuba-btn:active{background:#fffbeb;}
+.total-trat{background:linear-gradient(135deg,#78350f,#b45309,#d97706);border-radius:14px;padding:14px;text-align:center;margin:1rem 0 .75rem;}
+.total-trat-label{font-size:11px;font-weight:700;color:#fde68a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.total-trat-val{font-family:'Fraunces',serif;font-size:34px;font-weight:700;color:white;line-height:1;}
+.total-trat-unit{font-size:13px;color:#fed7aa;font-weight:600;margin-top:5px;}
+.trat-save-btn{width:100%;padding:15px;border-radius:16px;border:none;background:linear-gradient(135deg,#78350f,#d97706);color:white;font-size:17px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 20px rgba(217,119,6,.35);}
+.trat-save-btn:active{transform:scale(.98);}
+.nuevo-trat-btn{width:100%;padding:20px 14px;border-radius:20px;border:3px dashed #fde68a;background:linear-gradient(135deg,#fffbeb,#fef3c7);color:#78350f;font-size:18px;font-weight:800;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s;margin-bottom:.9rem;box-shadow:0 4px 16px rgba(217,119,6,.13);}
+.nuevo-trat-btn:hover,.nuevo-trat-btn:active{background:linear-gradient(135deg,#fef3c7,#fde68a);transform:scale(1.01);}
+.trat-group{background:white;border-radius:18px;margin-bottom:.9rem;border:1.5px solid #fde68a;box-shadow:0 2px 10px rgba(0,0,0,.05);overflow:hidden;}
+.trat-ph{display:flex;align-items:center;gap:12px;padding:1rem 1.1rem;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.trat-ph:hover,.trat-ph:active{background:#fffbeb;}
+.trat-ph-icon{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#fef3c7,#fde68a);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.trat-ph-prod{font-family:'Fraunces',serif;font-size:16px;font-weight:700;color:#78350f;}
+.trat-ph-sub{font-size:12px;color:#92400e;font-weight:500;margin-top:1px;}
+.trat-ph-total{text-align:right;flex-shrink:0;}
+.trat-ph-val{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:#b45309;}
+.trat-ph-unit{font-size:11px;color:#92400e;font-weight:600;}
+.trat-detail{border-top:2px solid #fef3c7;display:none;padding:1rem 1.1rem;}
+.cuba-det{background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:.75rem;margin-bottom:.6rem;}
+.cuba-det:last-child{margin-bottom:0;}
+.cuba-det-tit{font-size:13px;font-weight:700;color:#78350f;margin-bottom:4px;}
+.cuba-det-parc{font-size:12px;color:#92400e;}
+.btn-del-trat{display:block;width:100%;margin-top:.75rem;padding:11px;border-radius:10px;border:2px solid #fecaca;background:#fff5f5;color:#dc2626;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;text-align:center;-webkit-tap-highlight-color:transparent;}
+.btn-del-trat:active{background:#fee2e2;}
+.btn-edit-trat{display:block;width:100%;margin-top:.75rem;padding:11px;border-radius:10px;border:2px solid #fde68a;background:#fffbeb;color:#92400e;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;text-align:center;-webkit-tap-highlight-color:transparent;}
+.btn-edit-trat:active{background:#fef3c7;}
+.trat-edit-panel{background:#fffbeb;border:2px solid #fde68a;border-radius:12px;padding:.85rem;margin-top:.65rem;display:none;}
+.trat-edit-panel.open{display:block;}
+.exp-trat{border-color:#fde68a;background:#fffbeb;color:#92400e;}
+.exp-trat:hover{background:#fef3c7;}
+.trat-form-box{background:white;border-radius:18px;border:2px solid #fde68a;box-shadow:0 3px 14px rgba(217,119,6,.12);overflow:hidden;margin-bottom:.9rem;}
+.trat-form-hdr{background:linear-gradient(135deg,#78350f,#d97706);padding:1rem 1.1rem;display:flex;align-items:center;justify-content:space-between;}
+.trat-form-hdr-txt{font-family:'Fraunces',serif;font-size:17px;font-weight:700;color:white;}
+.trat-form-hdr-sub{font-size:12px;color:#fde68a;margin-top:2px;}
+.trat-form-body{padding:1rem 1.1rem;}
+.trat-sect-lbl{font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;display:block;}
+/* FIELDS */
+.f{margin-bottom:12px;}.f:last-child{margin-bottom:0;}
+.f label{font-size:12px;font-weight:700;color:#6b7280;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em;}
+.f input,.f select,.f textarea{width:100%;border:2px solid #e5e7eb;border-radius:12px;padding:11px 14px;font-size:16px;font-family:'DM Sans',sans-serif;font-weight:600;background:#f9fafb;color:#111827;outline:none;transition:all .2s;-webkit-appearance:none;appearance:none;}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:#16a34a;background:white;box-shadow:0 0 0 3px #d1fae5;}
+.f textarea{min-height:60px;resize:vertical;}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+/* PARCELA CARD */
+.parcela-riego{border-radius:18px;margin-bottom:.9rem;overflow:hidden;border:2px solid #e2e8f0;box-shadow:0 3px 14px rgba(0,0,0,0.07);}
+.pr-color-0{background:linear-gradient(135deg,#14532d,#16a34a);}
+.pr-color-1{background:linear-gradient(135deg,#1e3a8a,#2563eb);}
+.pr-color-2{background:linear-gradient(135deg,#7c2d12,#ea580c);}
+.pr-color-3{background:linear-gradient(135deg,#581c87,#9333ea);}
+.pr-color-4{background:linear-gradient(135deg,#713f12,#d97706);}
+.pr-header{padding:1rem 1.1rem;display:flex;align-items:center;gap:10px;}
+.pr-cultivo-svg{width:44px;height:44px;flex-shrink:0;}
+.pr-nombre{font-family:'Fraunces',serif;font-size:17px;font-weight:700;color:white;line-height:1.2;}
+.pr-sub{font-size:12px;color:rgba(255,255,255,0.75);margin-top:2px;}
+.pr-del{background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.3);border-radius:8px;cursor:pointer;color:white;font-size:16px;padding:6px 10px;flex-shrink:0;}
+.pr-del:hover{background:rgba(255,0,0,0.25);}
+.pr-body{background:white;padding:1rem 1.1rem;}
+/* Cultivo selector — chips */
+.cult-section{margin-bottom:12px;}
+.cult-label{font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:8px;}
+.cult-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.cult-chip{padding:7px 12px;border-radius:99px;border:2px solid #e5e7eb;background:white;font-size:13px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;color:#374151;transition:all .15s;-webkit-tap-highlight-color:transparent;}
+.cult-chip:active{transform:scale(.95);}
+.cult-chip.sel{border-color:#16a34a;background:#f0fdf4;color:#14532d;box-shadow:0 0 0 2px #bbf7d0;}
+/* m3 boxes */
+.m3-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem;}
+.m3-box{border-radius:14px;padding:12px;text-align:center;}
+.m3-ini{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #bbf7d0;}
+.m3-fin{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #bfdbfe;}
+.m3-box label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px;}
+.m3-ini label{color:#15803d;}
+.m3-fin label{color:#1d4ed8;}
+.m3-box input{width:100%;border:2px solid transparent;border-radius:10px;padding:10px 6px;font-size:24px;font-weight:700;font-family:'Fraunces',serif;text-align:center;background:white;outline:none;-webkit-appearance:none;appearance:none;transition:all .15s;}
+.m3-ini input{color:#14532d;}
+.m3-fin input{color:#1d4ed8;}
+.m3-box input:focus{border-color:#16a34a;box-shadow:0 0 0 3px #d1fae5;}
+.m3-unit{font-size:11px;font-weight:600;margin-top:4px;}
+.m3-ini .m3-unit{color:#16a34a;}
+.m3-fin .m3-unit{color:#2563eb;}
+/* ===== STATUS BADGE GRANDE con parpadeo ===== */
+.status-grande{border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:12px;margin-bottom:1rem;}
+.sg-espera{background:#f3f4f6;border:2px solid #e5e7eb;}
+.sg-regando{background:linear-gradient(135deg,#dcfce7,#bbf7d0);border:2px solid #4ade80;animation:pulseBorder 1.6s ease-in-out infinite;}
+.sg-fin{background:linear-gradient(135deg,#dbeafe,#bfdbfe);border:2px solid #60a5fa;}
+@keyframes pulseBorder{
+  0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,0.4);}
+  50%{box-shadow:0 0 0 8px rgba(74,222,128,0);}
+}
+.sg-dot{width:16px;height:16px;border-radius:50%;flex-shrink:0;}
+.sg-dot-espera{background:#d1d5db;}
+.sg-dot-regando{background:#16a34a;animation:pulsePoint 1.2s ease-in-out infinite;}
+.sg-dot-fin{background:#3b82f6;}
+@keyframes pulsePoint{
+  0%,100%{transform:scale(1);opacity:1;}
+  50%{transform:scale(1.4);opacity:0.7;}
+}
+.sg-texto{flex:1;}
+.sg-titulo{font-size:15px;font-weight:700;color:#111827;}
+.sg-sub{font-size:12px;color:#6b7280;margin-top:2px;}
+.sg-regando .sg-titulo{color:#14532d;}
+.sg-regando .sg-sub{color:#16a34a;}
+.sg-fin .sg-titulo{color:#1e3a8a;}
+.sg-fin .sg-sub{color:#2563eb;}
+.sg-emoji{font-size:26px;flex-shrink:0;}
+/* Round buttons */
+.round-btns{display:flex;gap:1.5rem;justify-content:center;margin:1rem 0;}
+.rbtn{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent;min-width:90px;}
+.rbtn-circle{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.rbtn-circle:active{transform:scale(.88);}
+.rbc-ini{background:linear-gradient(145deg,#16a34a,#14532d);box-shadow:0 6px 20px rgba(22,163,74,.45);}
+.rbc-fin{background:linear-gradient(145deg,#dc2626,#991b1b);box-shadow:0 6px 20px rgba(220,38,38,.45);}
+.rbc-dis{background:linear-gradient(145deg,#d1d5db,#9ca3af);box-shadow:none;cursor:not-allowed;opacity:.7;}
+.rbtn-label{font-size:14px;font-weight:700;color:#374151;}
+.rbtn-time{font-size:13px;font-weight:700;min-height:18px;}
+.rbtn-time-g{color:#16a34a;}
+.rbtn-time-b{color:#2563eb;}
+/* timestamps */
+.timestamps{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.75rem;}
+.ts-box{background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:9px 12px;}
+.ts-box label{font-size:10px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:3px;}
+.ts-val{font-size:14px;font-weight:600;color:#374151;}
+/* consumo */
+.consumo-display{background:linear-gradient(135deg,#14532d,#15803d,#16a34a);border-radius:14px;padding:14px;text-align:center;margin-bottom:.75rem;}
+.consumo-label{font-size:12px;font-weight:700;color:#bbf7d0;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.consumo-val{font-family:'Fraunces',serif;font-size:30px;font-weight:700;color:white;line-height:1;}
+.dur-badge{display:inline-block;background:rgba(255,255,255,0.15);border-radius:99px;padding:3px 10px;font-size:12px;color:#d1fae5;font-weight:600;margin-top:6px;}
+/* Incidencias desplegable */
+.inc-toggle{width:100%;padding:10px 14px;border-radius:12px;border:2px solid #fde68a;background:#fffbeb;color:#92400e;font-size:14px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:space-between;margin-bottom:0;transition:all .15s;}
+.inc-toggle:hover{background:#fef3c7;}
+.inc-panel{background:#fffbeb;border:2px solid #fde68a;border-top:none;border-radius:0 0 12px 12px;padding:.75rem;display:none;}
+.inc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.inc-tag{padding:6px 12px;border-radius:99px;border:2px solid #fde68a;background:white;font-size:13px;font-weight:600;color:#92400e;cursor:pointer;transition:all .15s;}
+.inc-tag:active{background:#fef3c7;}
+.inc-textarea{width:100%;border:2px solid #fde68a;border-radius:10px;padding:9px 12px;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:500;background:white;color:#111827;outline:none;resize:vertical;min-height:56px;}
+/* riego interno */
+.riego-interno{background:#f9fafb;border:2px solid #e5e7eb;border-radius:14px;padding:1rem;margin-top:.75rem;}
+.ri-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;}
+.ri-title{font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:#111827;}
+.ri-del-btn{background:#fee2e2;border:2px solid #fecaca;border-radius:8px;cursor:pointer;color:#dc2626;font-size:13px;font-weight:700;padding:5px 10px;font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent;}
+.ri-del-btn:active{background:#fecaca;}
+.add-riego-btn{width:100%;margin-top:.75rem;padding:11px;border-radius:12px;border:2px dashed #d1fae5;background:white;color:#16a34a;font-size:14px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.add-riego-btn:hover,.add-riego-btn:active{background:#f0fdf4;}
+.add-parcela-btn{width:100%;padding:20px 14px;border-radius:20px;border:3px dashed #4ade80;background:linear-gradient(135deg,#f0fdf4,#dcfce7);color:#14532d;font-size:18px;font-weight:800;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s;margin-bottom:.9rem;box-shadow:0 4px 16px rgba(22,163,74,0.13);letter-spacing:.01em;}
+.add-parcela-btn:hover,.add-parcela-btn:active{background:linear-gradient(135deg,#dcfce7,#bbf7d0);border-color:#16a34a;transform:scale(1.01);box-shadow:0 6px 22px rgba(22,163,74,0.22);}
+.save-row{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:.5rem;}
+.save-btn{padding:15px;border-radius:16px;border:none;background:linear-gradient(135deg,#14532d,#15803d);color:white;font-size:17px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 20px rgba(21,128,61,.35);}
+.save-btn:active{transform:scale(.98);}
+.reset-btn{padding:15px 16px;border-radius:16px;border:2px solid #e5e7eb;background:white;color:#6b7280;cursor:pointer;font-size:15px;}
+/* EDITAR RIEGO EN HISTORIAL */
+.ri-edit-btn{width:100%;margin-top:8px;padding:10px;border-radius:10px;border:2px solid #bbf7d0;background:#f0fdf4;color:#15803d;font-size:13px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;-webkit-tap-highlight-color:transparent;}
+.ri-edit-btn:active{background:#dcfce7;}
+.ri-edit-panel{background:#f0fdf4;border:2px solid #bbf7d0;border-radius:12px;padding:.85rem;margin-top:8px;display:none;}
+.ri-edit-panel.open{display:block;}
+.ri-edit-title{font-size:11px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.65rem;}
+.ri-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.65rem;}
+.ri-edit-box{border-radius:10px;padding:8px 10px;text-align:center;}
+.ri-edit-box.verde{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #bbf7d0;}
+.ri-edit-box.azul{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #bfdbfe;}
+.ri-edit-box label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px;}
+.ri-edit-box.verde label{color:#15803d;}
+.ri-edit-box.azul label{color:#1d4ed8;}
+.ri-edit-box input[type=date],
+.ri-edit-box input[type=time],
+.ri-edit-box input[type=number]{width:100%;border:2px solid transparent;border-radius:8px;padding:5px 4px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;background:white;outline:none;-webkit-appearance:none;color:#374151;text-align:center;}
+.ri-edit-box.verde input:focus{border-color:#16a34a;}
+.ri-edit-box.azul input:focus{border-color:#2563eb;}
+.ri-edit-save{width:100%;margin-top:.65rem;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,#14532d,#16a34a);color:white;font-size:14px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;}
+.ri-edit-save:active{opacity:.85;}
+/* HISTORIAL */
+.camp-title-text{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:#111827;}
+.parcela-group{background:white;border-radius:18px;margin-bottom:.9rem;border:1.5px solid #e2e8f0;box-shadow:0 2px 10px rgba(0,0,0,.05);overflow:hidden;}
+.ph{display:flex;align-items:center;gap:12px;padding:1rem 1.1rem;cursor:pointer;}
+.ph:hover,.ph:active{background:#f9fafb;}
+.ph-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.ph-icon-0{background:linear-gradient(135deg,#dcfce7,#bbf7d0);}
+.ph-icon-1{background:linear-gradient(135deg,#dbeafe,#bfdbfe);}
+.ph-icon-2{background:linear-gradient(135deg,#ffedd5,#fed7aa);}
+.ph-icon-3{background:linear-gradient(135deg,#ede9fe,#ddd6fe);}
+.ph-icon-4{background:linear-gradient(135deg,#fef3c7,#fde68a);}
+.ph-nombre{font-family:'Fraunces',serif;font-size:17px;font-weight:700;color:#111827;text-transform:capitalize;}
+.ph-sub{font-size:13px;color:#6b7280;font-weight:500;}
+.ph-counters{margin-left:auto;display:flex;gap:14px;flex-shrink:0;}
+.pctr{text-align:center;}
+.pctr-num{font-family:'Fraunces',serif;font-size:22px;font-weight:700;line-height:1;}
+.pctr-g{color:#16a34a;}.pctr-b{color:#2563eb;}.pctr-p{color:#7c3aed;}
+.pctr-lbl{font-size:10px;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em;}
+.parcela-riegos{border-top:2px solid #f1f5f9;display:none;}
+/* Riego en historial */
+.ri-h{padding:1rem 1.1rem;border-bottom:1.5px solid #f1f5f9;}
+.ri-h:last-child{border-bottom:none;}
+.ri-h-top{display:flex;align-items:flex-start;gap:10px;}
+.ri-num{width:32px;height:32px;border-radius:50%;background:#f0fdf4;border:2px solid #bbf7d0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#16a34a;flex-shrink:0;margin-top:1px;}
+.ri-info{flex:1;}
+.ri-fecha{font-size:14px;font-weight:700;color:#111827;}
+.ri-detalle{font-size:13px;color:#6b7280;margin-top:2px;}
+.ri-consumo{font-family:'Fraunces',serif;font-size:17px;font-weight:700;color:#16a34a;flex-shrink:0;margin-top:2px;}
+.ri-inc{font-size:12px;color:#92400e;background:#fffbeb;padding:4px 9px;border-radius:6px;margin-top:5px;display:inline-block;border:1px solid #fde68a;}
+/* Botón eliminar grande en historial - CRÍTICO para móvil */
+.btn-del-hist{display:block;width:100%;margin-top:10px;padding:11px;border-radius:10px;border:2px solid #fecaca;background:#fff5f5;color:#dc2626;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;text-align:center;-webkit-tap-highlight-color:transparent;}
+.btn-del-hist:active{background:#fee2e2;}
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem;}
+.modal{background:white;border-radius:20px;padding:1.5rem;width:100%;max-width:340px;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.modal h3{font-family:'Fraunces',serif;font-size:20px;font-weight:700;margin-bottom:1rem;color:#111827;}
+.modal input{width:100%;border:2px solid #d1fae5;border-radius:12px;padding:11px 14px;font-size:16px;font-weight:600;font-family:'DM Sans',sans-serif;color:#111827;background:#f0fdf4;outline:none;margin-bottom:1rem;}
+.modal input:focus{border-color:#16a34a;background:white;}
+.modal-btns{display:flex;gap:8px;}
+.mbtn-p{flex:1;padding:12px;border-radius:12px;border:none;background:linear-gradient(135deg,#14532d,#16a34a);color:white;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;}
+.mbtn-s{padding:12px 16px;border-radius:12px;border:2px solid #e5e7eb;background:white;color:#6b7280;font-size:15px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;}
+.empty{text-align:center;padding:2.5rem 1rem;color:#9ca3af;}
+.confirm-bg{position:fixed;inset:0;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;z-index:200;padding:1.5rem;}
+.confirm-box{background:white;border-radius:20px;padding:1.5rem;width:100%;max-width:320px;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center;}
+.confirm-ico{font-size:2.5rem;margin-bottom:.5rem;}
+.confirm-title{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:#111827;margin-bottom:.4rem;}
+.confirm-msg{font-size:14px;color:#6b7280;margin-bottom:1.25rem;line-height:1.5;}
+.confirm-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.confirm-cancel{padding:13px;border-radius:12px;border:2px solid #e5e7eb;background:white;color:#374151;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;}
+.confirm-cancel:active{background:#f3f4f6;}
+.confirm-ok{padding:13px;border-radius:12px;border:none;background:linear-gradient(135deg,#dc2626,#b91c1c);color:white;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;}
+.confirm-ok:active{background:#991b1b;}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:#111827;color:white;padding:12px 24px;border-radius:99px;font-size:15px;font-family:'DM Sans',sans-serif;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:999;box-shadow:0 6px 24px rgba(0,0,0,.3);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+/* EXPORT PANEL */
+.export-bar{background:white;border-top:2px solid #e2e8f0;padding:1rem 1.2rem;max-width:500px;margin:0 auto;}
+.export-bar-title{font-size:12px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.65rem;}
+.export-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.exp-btn{padding:14px 10px;border-radius:14px;border:2px solid #e5e7eb;background:white;font-size:13px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;transition:all .15s;color:#374151;}
+.exp-btn:active{transform:scale(.96);}
+.exp-btn-ico{font-size:26px;line-height:1;}
+.exp-csv{border-color:#bbf7d0;background:#f0fdf4;color:#14532d;}
+.exp-csv:hover{background:#dcfce7;}
+.exp-json{border-color:#bfdbfe;background:#eff6ff;color:#1e40af;}
+.exp-json:hover{background:#dbeafe;}
+.exp-copy{border-color:#fde68a;background:#fffbeb;color:#92400e;}
+.exp-copy:hover{background:#fef3c7;}
+.exp-share{border-color:#ddd6fe;background:#f5f3ff;color:#6d28d9;}
+.exp-share:hover{background:#ede9fe;}
+@keyframes shakeAviso{0%{transform:translateX(0)}15%{transform:translateX(-8px)}30%{transform:translateX(8px)}45%{transform:translateX(-6px)}60%{transform:translateX(6px)}75%{transform:translateX(-3px)}100%{transform:translateX(0)}}
+/* MAPS POPUP */
+.map-wrap{position:relative;flex-shrink:0;}
+.map-btn{display:flex;align-items:center;justify-content:center;padding:0 10px;border-radius:10px;background:linear-gradient(135deg,#dbeafe,#e0e7ff);border:2px solid #bfdbfe;color:#1e40af;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;min-height:44px;font-family:'DM Sans',sans-serif;gap:4px;}
+.map-popup{position:absolute;right:0;top:calc(100% + 6px);background:white;border:2px solid #bfdbfe;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:100;overflow:hidden;min-width:180px;display:none;}
+.map-popup.open{display:block;}
+.map-opt{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;border-bottom:1px solid #f1f5f9;text-decoration:none;-webkit-tap-highlight-color:transparent;}
+.map-opt:last-child{border-bottom:none;}
+.map-opt:active{background:#f0f9ff;}
+.map-opt-ico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.map-opt-txt{font-size:13px;font-weight:700;color:#111827;}
+.map-opt-sub{font-size:11px;color:#6b7280;margin-top:1px;}
+/* HORA MANUAL */
+.hora-manual-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.75rem;}
+.hora-manual-box{border-radius:12px;padding:10px 10px 8px;text-align:center;}
+.hmb-ini{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #bbf7d0;}
+.hmb-fin{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #bfdbfe;}
+.hora-manual-box label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:5px;}
+.hmb-ini label{color:#15803d;}
+.hmb-fin label{color:#1d4ed8;}
+.hm-inputs{display:flex;flex-direction:column;gap:4px;}
+.hora-manual-box input[type=date],
+.hora-manual-box input[type=time]{width:100%;border:2px solid transparent;border-radius:8px;padding:6px 4px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;background:white;outline:none;-webkit-appearance:none;color:#374151;text-align:center;}
+.hmb-ini input[type=date]:focus,.hmb-ini input[type=time]:focus{border-color:#16a34a;}
+.hmb-fin input[type=date]:focus,.hmb-fin input[type=time]:focus{border-color:#2563eb;}
+.hora-manual-box .hm-hint{font-size:9px;color:#9ca3af;margin-top:3px;}
+/* AGUA CUBA */
+.agua-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:.75rem;}
+.agua-box{border-radius:10px;padding:6px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;}
+.agua-box.ell{background:#eff6ff;border:1.5px solid #bfdbfe;}
+.agua-box.real{background:#f0fdf4;border:1.5px solid #bbf7d0;}
+.agua-box.caldo{background:#fff1f2;border:1.5px solid #fecdd3;}
+.agua-box label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:2px;min-height:2.4em;display:flex;align-items:center;justify-content:center;line-height:1.2;}
+.agua-box.ell label{color:#3b82f6;}
+.agua-box.real label{color:#16a34a;}
+.agua-box.caldo label{color:#e11d48;}
+.agua-box input{width:100%;border:none;background:transparent;font-family:'Fraunces',serif;font-size:16px;font-weight:700;text-align:center;outline:none;-webkit-appearance:none;}
+.agua-box.ell input{color:#1e3a8a;}
+.agua-box.real input{color:#14532d;}
+.agua-box.caldo input{color:#be123c;}
+.agua-box .agua-unit{font-size:9px;font-weight:600;margin-top:1px;color:#9ca3af;}
+/* PRODUCTO DENTRO DE CUBA */
+.prod-line{background:white;border:2px solid #fde68a;border-radius:12px;padding:.75rem;margin-bottom:.6rem;position:relative;}
+.prod-line-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;}
+.prod-line-lbl{font-size:11px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:.05em;}
+.prod-line-del{background:#fee2e2;border:1.5px solid #fecaca;border-radius:7px;cursor:pointer;color:#dc2626;font-size:12px;font-weight:700;padding:4px 8px;font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent;}
+.prod-line-nom{position:relative;margin-bottom:.5rem;}
+.prod-line-nom input{width:100%;border:2px solid #fde68a;border-radius:10px;padding:9px 12px;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;background:#fffbeb;color:#111827;outline:none;-webkit-appearance:none;}
+.prod-line-nom input:focus{border-color:#d97706;background:white;}
+.prod-sugg{position:absolute;left:0;right:0;top:100%;background:white;border:2px solid #fde68a;border-top:none;border-radius:0 0 12px 12px;z-index:60;box-shadow:0 8px 24px rgba(0,0,0,.12);overflow:hidden;}
+.prod-sugg-item{padding:11px 14px;cursor:pointer;border-bottom:1px solid #fef3c7;display:flex;justify-content:space-between;align-items:center;-webkit-tap-highlight-color:transparent;}
+.prod-sugg-item:last-child{border-bottom:none;}
+.prod-sugg-item:active{background:#fef9c3;}
+.prod-si-nom{font-size:14px;font-weight:700;color:#111827;}
+.prod-si-dos{font-size:12px;color:#92400e;font-weight:600;background:#fef3c7;padding:2px 8px;border-radius:99px;}
+.prod-cant-row{margin-top:.3rem;}
+.prod-cant-inner{display:grid;grid-template-columns:1fr 60px;gap:6px;align-items:center;}
+.dosis-mini-row{display:flex;align-items:center;gap:6px;margin-bottom:.4rem;flex-wrap:wrap;}
+.dosis-mini-lbl{font-size:11px;color:#92400e;font-weight:700;flex-shrink:0;}
+.dosis-mini-inp{border:1.5px solid #fde68a;border-radius:7px;padding:5px 8px;font-size:14px;font-weight:700;color:#78350f;background:#fffbeb;outline:none;width:90px;font-family:'DM Sans',sans-serif;-webkit-appearance:none;text-align:center;}
+.dosis-mini-inp:focus{border-color:#d97706;background:white;}
+.dosis-mini-usel{border:1.5px solid #fde68a;border-radius:7px;padding:5px 6px;font-size:13px;font-weight:700;font-family:'DM Sans',sans-serif;background:#fffbeb;color:#78350f;outline:none;-webkit-appearance:none;appearance:none;}
+.dosis-mini-sep{font-size:11px;color:#92400e;font-weight:600;}
+.prod-cant-input{border:2px solid #fde68a;border-radius:8px;padding:10px 4px;font-size:16px;font-family:'Fraunces',serif;font-weight:700;color:#78350f;background:#fffbeb;outline:none;-webkit-appearance:none;width:100%;text-align:center;}
+.prod-cant-input:focus{border-color:#d97706;background:white;}
+.prod-unit-sel{border:2px solid #fde68a;border-radius:8px;padding:10px 4px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;background:#fffbeb;color:#78350f;outline:none;-webkit-appearance:none;appearance:none;width:100%;text-align:center;}
+.add-prod-line-btn{width:100%;margin-top:.5rem;padding:9px;border-radius:10px;border:2px dashed #fde68a;background:white;color:#d97706;font-size:13px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+/* TOTALES POR PRODUCTO */
+.totales-box{background:linear-gradient(135deg,#78350f,#b45309,#d97706);border-radius:16px;padding:1rem;margin:1rem 0 .75rem;}
+.totales-tit{font-size:11px;font-weight:700;color:#fde68a;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.75rem;}
+.tot-prod-row{display:flex;align-items:baseline;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.15);}
+.tot-prod-row:last-child{border-bottom:none;}
+.tot-prod-nom{font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);flex:1;margin-right:8px;}
+.tot-prod-val{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:white;}
+.tot-prod-unit{font-size:12px;color:#fed7aa;font-weight:600;margin-left:4px;}
+/* PRODUCTOS FAVORITOS */
+.favs-section{margin-bottom:.6rem;}
+.favs-label{font-size:10px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px;}
+.favs-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.fav-chip{padding:6px 11px;border-radius:99px;border:1.5px solid #fde68a;background:linear-gradient(135deg,#fffbeb,#fef3c7);font-size:12px;font-weight:700;color:#78350f;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;-webkit-tap-highlight-color:transparent;}
+.fav-chip:active{background:linear-gradient(135deg,#fef3c7,#fde68a);transform:scale(.95);}
+.fav-chip-ico{font-size:14px;}
+.fav-chip-nom{max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.fav-chip-dos{font-size:10px;color:#92400e;opacity:.8;}
+/* FOTO PARCELA */
+.foto-btn{display:flex;align-items:center;gap:7px;width:100%;padding:10px 14px;border-radius:12px;border:2px dashed #bbf7d0;background:#f0fdf4;color:#15803d;font-size:13px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:.5rem;-webkit-tap-highlight-color:transparent;}
+.foto-btn:active{background:#dcfce7;}
+.foto-thumb-wrap{position:relative;margin-top:.6rem;border-radius:12px;overflow:hidden;border:2px solid #bbf7d0;}
+.foto-thumb{width:100%;max-height:180px;object-fit:cover;display:block;}
+.foto-del{position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.55);border:none;border-radius:50%;width:28px;height:28px;color:white;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+/* FOTO en historial */
+.hist-foto{width:100%;max-height:160px;object-fit:cover;border-radius:10px;margin-top:.5rem;border:1.5px solid #e2e8f0;}
+.camp-resumen{background:white;border:2px solid #fde68a;border-radius:16px;padding:1rem;margin-bottom:1rem;}
+.camp-res-tit{font-size:13px;font-weight:700;color:#78350f;margin-bottom:.75rem;display:flex;align-items:center;gap:6px;}
+.camp-res-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid #fef3c7;}
+.camp-res-row:last-child{border-bottom:none;}
+.camp-res-prod{font-size:13px;font-weight:700;color:#111827;}
+.camp-res-num{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:#b45309;}
+.camp-res-unit{font-size:12px;color:#92400e;font-weight:600;margin-left:3px;}
+/* RESUMEN POR ZONAS */
+.resumen-zonas-box{background:white;border:2px solid #bbf7d0;border-radius:16px;padding:1rem;margin-bottom:1rem;}
+.resumen-zonas-tit{font-size:13px;font-weight:700;color:#14532d;margin-bottom:.75rem;display:flex;align-items:center;gap:6px;}
+.rz-zona-hdr{background:linear-gradient(135deg,#14532d,#16a34a);border-radius:10px;padding:7px 12px;margin-bottom:4px;margin-top:.5rem;display:flex;align-items:center;justify-content:space-between;}
+.rz-zona-nombre{font-size:13px;font-weight:700;color:white;}
+.rz-zona-tot{font-size:12px;color:#bbf7d0;font-weight:600;}
+.rz-cult-row{display:flex;align-items:center;justify-content:space-between;padding:5px 8px;border-bottom:1px solid #f0fdf4;}
+.rz-cult-row:last-child{border-bottom:none;}
+.rz-cult-nombre{font-size:13px;font-weight:700;color:#111827;}
+.rz-cult-datos{font-size:12px;color:#16a34a;font-weight:600;text-align:right;}
+</style>
+</head>
+<body>
+<!-- HEADER -->
+<div class="hdr">
+  <svg class="hdr-ilu" width="180" height="150" viewBox="0 0 180 150" fill="none">
+    <path d="M40 110 Q42 82 38 52" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M38 76 Q22 66 16 48" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <ellipse cx="14" cy="44" rx="14" ry="8" fill="white" transform="rotate(-28 14 44)"/>
+    <path d="M38 88 Q56 76 62 60" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <ellipse cx="66" cy="56" rx="14" ry="8" fill="white" transform="rotate(22 66 56)"/>
+    <ellipse cx="36" cy="128" rx="26" ry="16" fill="white" transform="rotate(-10 36 128)"/>
+    <circle cx="27" cy="120" r="3.5" fill="rgba(0,0,0,0.13)"/>
+    <circle cx="44" cy="125" r="3" fill="rgba(0,0,0,0.13)"/>
+    <path d="M138 100 Q140 74 136 46" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M136 68 Q118 56 112 38" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <ellipse cx="109" cy="34" rx="13" ry="7" fill="white" transform="rotate(-22 109 34)"/>
+    <path d="M136 82 Q154 70 160 54" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <ellipse cx="164" cy="50" rx="13" ry="7" fill="white" transform="rotate(18 164 50)"/>
+    <ellipse cx="138" cy="122" rx="18" ry="22" fill="white" transform="rotate(4 138 122)"/>
+    <circle cx="133" cy="114" r="3" fill="rgba(0,0,0,0.13)"/>
+    <ellipse cx="90" cy="138" rx="16" ry="10" fill="white" transform="rotate(-6 90 138)"/>
+    <ellipse cx="70" cy="95" rx="3.5" ry="5" fill="white" opacity="0.55"/>
+    <ellipse cx="105" cy="72" rx="3" ry="4" fill="white" opacity="0.45"/>
+  </svg>
+  <div class="hdr-top">
+    <div class="hdr-logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M12 3 Q14 9 12 16 Q10 9 12 3Z" fill="#bbf7d0"/>
+        <path d="M7 7 Q11 11 12 16 Q9 11 7 7Z" fill="#bbf7d0"/>
+        <path d="M17 7 Q13 11 12 16 Q15 11 17 7Z" fill="#bbf7d0"/>
+        <ellipse cx="12" cy="20.5" rx="5.5" ry="3.5" fill="#d97706"/>
+      </svg>
+    </div>
+    <div><h1>Mis Riegos y<br>Tratamientos</h1><p class="hdr-sub" id="fecha-header"></p></div>
+  </div>
+
+</div>
+<div class="camp-bar">
+  <span style="font-size:18px;">📅</span>
+  <span class="camp-label">Campaña:</span>
+  <select class="camp-select" id="camp-select" onchange="cambiarCampana()"></select>
+  <button class="camp-new" onclick="nuevaCampana()">+ Nueva</button>
+</div>
+<div class="body">
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('nuevo')" id="tab-nuevo">🌱 Nuevo riego</button>
+    <button class="tab" onclick="showTab('historial')" id="tab-hist">📋 Mis parcelas</button>
+    <button class="tab tab-trat" onclick="showTab('tratamientos')" id="tab-trat">🧪 Tratamientos</button>
+  </div>
+  <div id="pane-nuevo">
+    <div id="parcelas-riego-list"></div>
+    <button class="add-parcela-btn" onclick="agregarParcela()">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#14532d" stroke-width="2.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Añadir parcela
+    </button>
+    <div class="save-row">
+      <button class="save-btn" onclick="guardarRegistro()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+        Guardar todo
+      </button>
+      <button class="reset-btn" onclick="limpiarFormulario()" title="Limpiar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+      </button>
+    </div>
+    <div style="height:1.5rem;"></div>
+  </div>
+  <div id="pane-historial" style="display:none;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;">
+      <span style="font-size:22px;">🌿</span>
+      <span class="camp-title-text" id="hist-camp-title"></span>
+    </div>
+    <div id="parcelas-container"></div>
+    <div id="resumen-riegos-panel" style="margin-top:.5rem;"></div>
+    <div style="height:1.5rem;"></div>
+  </div>
+  <!-- ===== PANE TRATAMIENTOS ===== -->
+  <div id="pane-tratamientos" style="display:none;">
+    <div id="trat-form-container"></div>
+    <button class="nuevo-trat-btn" id="btn-nuevo-trat" onclick="nuevoTratamiento()">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#78350f" stroke-width="2.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Nuevo tratamiento
+    </button>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;">
+      <span style="font-size:20px;">🧪</span>
+      <span class="camp-title-text">Historial de tratamientos</span>
+    </div>
+    <div id="trat-hist-container"></div>
+    <div style="height:1.5rem;"></div>
+  </div>
+</div>
+<!-- MODAL CONFIRMACIÓN -->
+<div class="confirm-bg" id="confirm-modal" style="display:none;">
+  <div class="confirm-box">
+    <div class="confirm-ico" id="confirm-ico">🗑</div>
+    <div class="confirm-title" id="confirm-title">¿Eliminar?</div>
+    <div class="confirm-msg" id="confirm-msg">Esta acción no se puede deshacer.</div>
+    <div class="confirm-btns">
+      <button class="confirm-cancel" onclick="cerrarConfirm()">Cancelar</button>
+      <button class="confirm-ok" id="confirm-ok-btn">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-camp" style="display:none;">
+  <div class="modal">
+    <h3>🗓 Nueva campaña</h3>
+    <input type="text" id="modal-camp-input" placeholder="Ej: 2027, Verano 2027..." maxlength="24"/>
+    <div class="modal-btns">
+      <button class="mbtn-p" onclick="confirmarCampana()">Crear campaña</button>
+      <button class="mbtn-s" onclick="cerrarModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+<!-- PANEL EXPORTAR -->
+<div class="export-bar">
+  <div class="export-bar-title">💧 Guardar / Exportar RIEGOS</div>
+  <div class="export-btns" style="grid-template-columns:1fr 1fr;margin-bottom:1rem;">
+    <button class="exp-btn exp-csv" onclick="exportarCSV()">
+      <span class="exp-btn-ico">📊</span>
+      <span>Excel / CSV</span>
+    </button>
+    <button class="exp-btn exp-copy" onclick="exportarTexto()">
+      <span class="exp-btn-ico">📋</span>
+      <span>Copiar texto</span>
+    </button>
+  </div>
+  <div class="export-bar-title">🧪 Guardar / Exportar TRATAMIENTOS</div>
+  <div class="export-btns" style="grid-template-columns:1fr 1fr;margin-bottom:.5rem;">
+    <button class="exp-btn exp-trat" onclick="exportarTratCSV()">
+      <span class="exp-btn-ico">📊</span>
+      <span>Excel / CSV</span>
+    </button>
+    <button class="exp-btn exp-copy" onclick="exportarTextoTrat()">
+      <span class="exp-btn-ico">📋</span>
+      <span>Copiar texto</span>
+    </button>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:1rem;justify-content:flex-end;">
+    <button onclick="limpiarCatalogo()" style="font-size:11px;font-weight:600;color:#9ca3af;background:none;border:1px solid #e5e7eb;border-radius:8px;padding:5px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;">🗑 Borrar favoritos</button>
+    <button onclick="borrarDatosPrueba()" style="font-size:11px;font-weight:600;color:#9ca3af;background:none;border:1px solid #e5e7eb;border-radius:8px;padding:5px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;">🧹 Borrar todo</button>
+  </div>
+  <div style="background:#eff6ff;border:2px solid #bfdbfe;border-radius:12px;padding:10px 12px;margin-bottom:.75rem;font-size:12px;color:#1e3a8a;line-height:1.6;">
+    <div style="margin-bottom:5px;">💾 <b>Hacer copia</b> — guarda un archivo .json con <b>todos tus datos</b> (riegos, tratamientos, campañas). En iPhone se guarda en <b>Archivos → Descargas</b>. Guárdalo en iCloud o envíatelo por correo/WhatsApp para no perderlo.</div>
+    <div>🔄 <b>Restaurar</b> — carga un archivo .json que hayas guardado antes y <b>recupera todos tus datos</b>. Útil si cambias de móvil, borras el navegador o si los datos desaparecen. ⚠️ Reemplaza lo que haya actualmente.</div>
+  </div>
+  <div class="export-btns" style="grid-template-columns:1fr 1fr;margin-bottom:.5rem;">
+    <button class="exp-btn exp-json" onclick="exportarJSON()">
+      <span class="exp-btn-ico">💾</span>
+      <span>Hacer copia</span>
+    </button>
+    <button class="exp-btn" style="border-color:#bbf7d0;background:#f0fdf4;color:#14532d;" onclick="document.getElementById('restore-input').click()">
+      <span class="exp-btn-ico">🔄</span>
+      <span>Restaurar datos</span>
+    </button>
+  </div>
+  <input type="file" id="restore-input" accept=".json" style="display:none;" onchange="restaurarJSON(this)"/>
+  <div class="export-btns" style="grid-template-columns:1fr;">
+    <button class="exp-btn exp-share" onclick="compartirArchivo()">
+      <span class="exp-btn-ico">☁️</span>
+      <span>Guardar en iCloud / AirDrop</span>
+    </button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const CULTIVO_SVG={
+  'Patatas':`<svg viewBox="0 0 44 44" fill="none"><ellipse cx="22" cy="26" rx="14" ry="10" fill="#c49a3c" transform="rotate(-8 22 26)"/><ellipse cx="22" cy="25" rx="13" ry="9" fill="#d4a843" transform="rotate(-8 22 25)"/><circle cx="17" cy="22" r="2" fill="#b8872a"/><circle cx="26" cy="27" r="1.5" fill="#b8872a"/><circle cx="21" cy="30" r="1.5" fill="#b8872a"/><path d="M22 16 Q24 10 22 6 Q20 10 22 16Z" fill="#4ade80"/><path d="M22 14 Q17 10 15 6" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round"/><path d="M22 14 Q27 10 29 6" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  'Remolacha':`<svg viewBox="0 0 44 44" fill="none"><ellipse cx="22" cy="30" rx="11" ry="13" fill="#be123c"/><ellipse cx="22" cy="29" rx="10" ry="12" fill="#e11d48"/><path d="M18 20 Q16 14 18 8" stroke="#15803d" stroke-width="2" stroke-linecap="round"/><path d="M22 18 Q22 12 22 6" stroke="#15803d" stroke-width="2" stroke-linecap="round"/><path d="M26 20 Q28 14 26 8" stroke="#15803d" stroke-width="2" stroke-linecap="round"/><ellipse cx="16" cy="7" rx="5" ry="3" fill="#16a34a" transform="rotate(-25 16 7)"/><ellipse cx="22" cy="5" rx="5" ry="3" fill="#16a34a"/><ellipse cx="28" cy="7" rx="5" ry="3" fill="#16a34a" transform="rotate(25 28 7)"/></svg>`,
+  'Cereal':`<svg viewBox="0 0 44 44" fill="none"><path d="M22 40 Q22 20 22 8" stroke="#ca8a04" stroke-width="2" stroke-linecap="round"/><ellipse cx="22" cy="10" rx="4" ry="6" fill="#eab308"/><ellipse cx="18" cy="14" rx="3.5" ry="5.5" fill="#eab308" transform="rotate(-20 18 14)"/><ellipse cx="26" cy="14" rx="3.5" ry="5.5" fill="#eab308" transform="rotate(20 26 14)"/><ellipse cx="16" cy="20" rx="3" ry="5" fill="#ca8a04" transform="rotate(-25 16 20)"/><ellipse cx="28" cy="20" rx="3" ry="5" fill="#ca8a04" transform="rotate(25 28 20)"/><path d="M14 38 Q22 30 30 38" stroke="#ca8a04" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>`,
+  'Otro':`<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="14" fill="#d1fae5"/><path d="M22 32 Q22 18 22 10" stroke="#15803d" stroke-width="2.5" stroke-linecap="round"/><path d="M22 18 Q15 14 12 8" stroke="#16a34a" stroke-width="2" stroke-linecap="round"/><ellipse cx="10" cy="6" rx="7" ry="4" fill="#22c55e" transform="rotate(-20 10 6)"/><path d="M22 22 Q29 18 32 12" stroke="#16a34a" stroke-width="2" stroke-linecap="round"/><ellipse cx="34" cy="10" rx="7" ry="4" fill="#22c55e" transform="rotate(20 34 10)"/></svg>`
+};
+const CULTIVO_NAMES=['Patatas','Remolacha','Girasol','Cereal'];
+const CULTIVO_EMOJI={'Patatas':'🥔','Remolacha':'🌱','Girasol':'🌻','Cereal':'🌾','Otro':'🌿','':'🌿'};
+const COLORS=['pr-color-0','pr-color-1','pr-color-2','pr-color-3','pr-color-4'];
+const HIST_CLS=['ph-icon-0','ph-icon-1','ph-icon-2','ph-icon-3','ph-icon-4'];
+const DS=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const MS=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+function pad(n){return String(n).padStart(2,'0');}
+function fmtHora(d){return pad(d.getHours())+':'+pad(d.getMinutes());}
+function fmtCorta(d){return DS[d.getDay()].substring(0,3)+' '+d.getDate()+'/'+pad(d.getMonth()+1)+' '+fmtHora(d);}
+function fmtLarga(d){return DS[d.getDay()]+' '+d.getDate()+' '+MS[d.getMonth()]+' '+d.getFullYear();}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
+// DB
+let db={};
+try{db=JSON.parse(localStorage.getItem('riegos_db5')||'{}');}catch(e){}
+if(!db.campanas)db.campanas=[{id:'2026',nombre:'Campaña 2026'}];
+if(!db.registros)db.registros=[];
+let campanaActual=db.campanas[db.campanas.length-1].id;
+function guardarDB(){try{localStorage.setItem('riegos_db5',JSON.stringify(db));}catch(e){}}
+// ===== PERSISTENCIA PARCELAS ACTIVAS =====
+function guardarParcelasActivas(){try{localStorage.setItem('riegos_activas',JSON.stringify({parcelas:parcelasActivas,counter:pCounter}));}catch(e){}}
+function cargarParcelasActivas(){
+  try{
+    const raw=localStorage.getItem('riegos_activas');
+    if(!raw)return false;
+    const data=JSON.parse(raw);
+    if(data&&data.parcelas&&data.parcelas.length>0){
+      parcelasActivas=data.parcelas;
+      pCounter=data.counter||data.parcelas.length;
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+const now=new Date();
+document.getElementById('fecha-header').textContent=DS[now.getDay()]+', '+now.getDate()+' de '+MS[now.getMonth()]+' de '+now.getFullYear();
+let parcelasActivas=[];
+let pCounter=0;
+// ===== CAMPAÑAS =====
+function initCampanas(){
+  const sel=document.getElementById('camp-select');
+  sel.innerHTML=db.campanas.map(c=>`<option value="${c.id}"${c.id===campanaActual?' selected':''}>${c.nombre}</option>`).join('');
+  actualizarStats();
+}
+initCampanas();
+function cambiarCampana(){campanaActual=document.getElementById('camp-select').value;actualizarStats();if(document.getElementById('pane-historial').style.display!=='none')renderHistorial();}
+function nuevaCampana(){document.getElementById('modal-camp').style.display='flex';setTimeout(()=>document.getElementById('modal-camp-input').focus(),100);}
+function cerrarModal(){document.getElementById('modal-camp').style.display='none';document.getElementById('modal-camp-input').value='';}
+function confirmarCampana(){
+  const nombre=document.getElementById('modal-camp-input').value.trim();
+  if(!nombre){alert('Escribe un nombre.');return;}
+  const id='c'+Date.now();
+  db.campanas.push({id,nombre});campanaActual=id;
+  guardarDB();cerrarModal();initCampanas();toast('Campaña "'+nombre+'" creada ✓');
+}
+function actualizarStats(){
+  const regs=db.registros.filter(r=>r.campana===campanaActual);
+  let tr=0,tm=0;
+  // Desglose por cultivo
+  const desglose={};
+  regs.forEach(reg=>{
+    const cult=reg.cultivo||'Otro';
+    if(!desglose[cult])desglose[cult]={riegos:0,m3:0};
+    if(reg.riegos)reg.riegos.forEach((r,ri)=>{
+      tr++;desglose[cult].riegos++;
+      const c=parseFloat(r.consumo);if(!isNaN(c)){tm+=c;desglose[cult].m3+=c;}
+    });
+  });
+  // Actualizar resumen en panel de historial si está visible
+  const resPanel=document.getElementById('resumen-riegos-panel');
+  if(resPanel)renderResumenRiegosPorZonas(resPanel,regs);
+}
+function renderResumenRiegosPorZonas(container,regsParam){
+  const regs=regsParam||db.registros.filter(r=>r.campana===campanaActual);
+  if(regs.length===0){container.innerHTML='';return;}
+  // Agrupar por zona → cultivo
+  const zonaMap={};
+  regs.forEach(reg=>{
+    const zona=reg.zona&&reg.zona.trim()?reg.zona.trim():'Sin zona';
+    const cultivo=reg.cultivo||'Sin cultivo';
+    if(!zonaMap[zona])zonaMap[zona]={};
+    if(!zonaMap[zona][cultivo])zonaMap[zona][cultivo]={riegos:0,m3:0,ha:0};
+    const ha=parseFloat(reg.hectareas)||0;
+    zonaMap[zona][cultivo].ha+=ha;
+    if(reg.riegos)reg.riegos.forEach(r=>{
+      zonaMap[zona][cultivo].riegos++;
+      const c=parseFloat(r.consumo);if(!isNaN(c))zonaMap[zona][cultivo].m3+=c;
+    });
+  });
+  const campNombre=db.campanas.find(c=>c.id===campanaActual)?.nombre||campanaActual;
+  let html=`<div class="resumen-zonas-box">
+    <div class="resumen-zonas-tit">📊 Resumen campaña ${campNombre}</div>`;
+  Object.keys(zonaMap).forEach(zona=>{
+    let zRiegos=0,zM3=0;
+    Object.values(zonaMap[zona]).forEach(d=>{zRiegos+=d.riegos;zM3+=d.m3;});
+    html+=`<div class="rz-zona-hdr">
+      <span class="rz-zona-nombre">📍 ${zona}</span>
+      <span class="rz-zona-tot">${zRiegos} riegos · ${zM3>0?Math.round(zM3)+' m³':''}</span>
+    </div>`;
+    Object.keys(zonaMap[zona]).forEach(cult=>{
+      const d=zonaMap[zona][cult];
+      const lm2=(d.m3>0&&d.ha>0)?(d.m3*1000/(d.ha*10000)).toFixed(2):'—';
+      html+=`<div class="rz-cult-row">
+        <span class="rz-cult-nombre">${CULTIVO_EMOJI[cult]||'🌿'} ${cult}</span>
+        <span class="rz-cult-datos">${d.riegos}💧 ${d.m3>0?Math.round(d.m3)+' m³':''} ${d.ha>0?'· '+Math.round(d.ha*100)/100+' ha':''}${lm2!=='—'?' · <b>'+lm2+' L/m²</b>':''}</span>
+      </div>`;
+    });
+  });
+  html+='</div>';
+  container.innerHTML=html;
+}
+// ===== PARCELAS ACTIVAS =====
+// ===== MODAL CONFIRMACIÓN (reemplaza confirm() para compatibilidad móvil) =====
+let _confirmCallback=null;
+function pedirConfirm(ico,titulo,msg,callback){
+  document.getElementById('confirm-ico').textContent=ico;
+  document.getElementById('confirm-title').textContent=titulo;
+  document.getElementById('confirm-msg').textContent=msg;
+  document.getElementById('confirm-ok-btn').onclick=function(){
+    cerrarConfirm();
+    if(callback)callback();
+  };
+  document.getElementById('confirm-modal').style.display='flex';
+}
+function cerrarConfirm(){
+  document.getElementById('confirm-modal').style.display='none';
+  _confirmCallback=null;
+}
+
+function agregarParcela(){
+  pCounter++;
+  const pid='p'+pCounter;
+  parcelasActivas.push({id:pid,colorIdx:(pCounter-1)%5,nombre:'',cultivo:'',hectareas:'',zona:'',riegos:[]});
+  renderParcelasActivas();
+  setTimeout(()=>{const el=document.querySelector('.add-parcela-btn');if(el)el.scrollIntoView({behavior:'smooth',block:'nearest'});},150);
+}
+function quitarParcela(pid){
+  pedirConfirm('🏕','¿Quitar esta parcela?','Se eliminará del formulario actual. Los registros ya guardados no se borran.',function(){
+    parcelasActivas=parcelasActivas.filter(p=>p.id!==pid);
+    renderParcelasActivas();
+  });
+}
+function setCultivo(pid,cultivo){
+  const p=parcelasActivas.find(x=>x.id===pid);
+  if(p){p.cultivo=cultivo;renderParcelasActivas();}
+}
+function setNombre(pid,v){const p=parcelasActivas.find(x=>x.id===pid);if(p){p.nombre=v;guardarParcelasActivas();}}
+// Extrae parcelas conocidas de todos los registros guardados
+function parcelasConocidas(){
+  const mapa={};
+  db.registros.forEach(reg=>{
+    const key=reg.nombre.trim().toLowerCase();
+    if(!mapa[key]){mapa[key]={nombre:reg.nombre,cultivo:reg.cultivo,hectareas:reg.hectareas,zona:reg.zona||''};}
+  });
+  return Object.values(mapa);
+}
+// Extrae zonas conocidas (máx 7) de todos los registros
+function zonasConocidas(){
+  const set=new Set();
+  db.registros.forEach(reg=>{if(reg.zona&&reg.zona.trim())set.add(reg.zona.trim());});
+  return [...set].slice(0,7);
+}
+function mostrarSugerencias(pid,inputEl){
+  const v=inputEl.value.trim().toLowerCase();
+  // Eliminar dropdown anterior
+  const prev=document.getElementById('sugg-'+pid);
+  if(prev)prev.remove();
+  if(v.length===0)return;
+  const conocidas=parcelasConocidas().filter(p=>p.nombre.toLowerCase().includes(v));
+  if(conocidas.length===0)return;
+  const dropdown=document.createElement('div');
+  dropdown.id='sugg-'+pid;
+  dropdown.style.cssText='position:absolute;left:0;right:0;top:100%;background:white;border:2px solid #bbf7d0;border-top:none;border-radius:0 0 12px 12px;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,0.12);overflow:hidden;';
+  conocidas.forEach(pc=>{
+    const item=document.createElement('div');
+    item.style.cssText='padding:10px 14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f0fdf4;font-family:DM Sans,sans-serif;gap:8px;';
+    item.innerHTML=`<div style="flex:1;min-width:0;" onclick="">
+      <div style="font-size:15px;font-weight:700;color:#111827;">${pc.nombre}</div>
+      <div style="font-size:12px;color:#6b7280;margin-top:1px;">${pc.cultivo||'Sin cultivo'}${pc.zona?' · 📍'+pc.zona:''}${pc.hectareas?' · '+pc.hectareas+' ha':''}</div>
+    </div>
+    <span style="font-size:18px;flex-shrink:0;">${CULTIVO_EMOJI[pc.cultivo]||'🌿'}</span>
+    <button data-del="1" style="background:#fee2e2;border:1px solid #fecaca;border-radius:6px;width:24px;height:24px;font-size:11px;cursor:pointer;color:#dc2626;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✕</button>`;
+    const delBtn=item.querySelector('[data-del]');
+    delBtn.addEventListener('mousedown',e=>e.preventDefault());
+    delBtn.addEventListener('click',function(e){
+      e.stopPropagation();
+      borrarParcelaConocida(pc.nombre);
+      dropdown.remove();
+    });
+    delBtn.addEventListener('touchend',function(e){
+      e.preventDefault();e.stopPropagation();
+      borrarParcelaConocida(pc.nombre);
+      dropdown.remove();
+    });
+    const zona=item.querySelector('div[style*="flex:1"]');
+    zona.addEventListener('mousedown',e=>e.preventDefault());
+    zona.addEventListener('click',function(){seleccionarParcela(pid,pc);dropdown.remove();});
+    zona.addEventListener('touchend',function(e){e.preventDefault();seleccionarParcela(pid,pc);dropdown.remove();});
+    dropdown.appendChild(item);
+  });
+  // Posicionar relativo al input
+  inputEl.parentElement.style.position='relative';
+  inputEl.parentElement.appendChild(dropdown);
+}
+function borrarParcelaConocida(nombre){
+  // Elimina todos los registros de riegos que tengan ese nombre de parcela
+  pedirConfirm('✕','¿Eliminar "'+nombre+'" del historial?','Se borrarán todos sus riegos guardados. No afecta al formulario actual.',function(){
+    db.registros=db.registros.filter(r=>r.nombre.trim().toLowerCase()!==nombre.trim().toLowerCase());
+    guardarDB();actualizarStats();
+    toast('✕ '+nombre+' eliminada del historial');
+  });
+}
+function seleccionarParcela(pid,pc){
+  const p=parcelasActivas.find(x=>x.id===pid);
+  if(!p)return;
+  p.nombre=pc.nombre;
+  p.cultivo=pc.cultivo||p.cultivo;
+  p.hectareas=pc.hectareas||p.hectareas;
+  p.zona=pc.zona||p.zona;
+  renderParcelasActivas();
+  // Scroll suave al inicio de la parcela
+  setTimeout(()=>{
+    const el=document.getElementById('addriego-'+pid);
+    if(el)el.scrollIntoView({behavior:'smooth',block:'nearest'});
+  },100);
+  toast('📍 '+pc.nombre+' cargada automáticamente');
+}
+function ocultarSugerencias(pid){
+  setTimeout(()=>{
+    const el=document.getElementById('sugg-'+pid);
+    if(el)el.remove();
+  },150);
+}
+function setHa(pid,v){const p=parcelasActivas.find(x=>x.id===pid);if(p)p.hectareas=v;}
+function setZona(pid,v){const p=parcelasActivas.find(x=>x.id===pid);if(p){p.zona=v;guardarParcelasActivas();}}
+function agregarRiego(pid){
+  const p=parcelasActivas.find(x=>x.id===pid);if(!p)return;
+  p.riegos.push({id:'r'+Date.now()+'_'+Math.random(),inicioTS:null,finTS:null,m3ini:'',m3fin:'',consumo:'—',duracion:'—',incidencias:''});
+  renderParcelasActivas();
+  setTimeout(()=>{const el=document.getElementById('addriego-'+pid);if(el)el.scrollIntoView({behavior:'smooth',block:'nearest'});},150);
+}
+function quitarRiego(pid,rid){
+  const p=parcelasActivas.find(x=>x.id===pid);if(!p)return;
+  pedirConfirm('💧','¿Quitar este riego?','Se eliminará del formulario. Los registros ya guardados no se borran.',function(){
+    p.riegos=p.riegos.filter(r=>r.id!==rid);
+    renderParcelasActivas();
+  });
+}
+function mostrarAviso(rid,msg){
+  const prev=document.getElementById('aviso-'+rid);
+  if(prev)prev.remove();
+  const riCard=document.getElementById('ri-'+rid);
+  if(!riCard)return;
+  const aviso=document.createElement('div');
+  aviso.id='aviso-'+rid;
+  aviso.style.cssText='background:linear-gradient(135deg,#fef3c7,#fde68a);border:2px solid #f59e0b;border-radius:12px;padding:12px 14px;margin-bottom:.75rem;display:flex;align-items:flex-start;gap:10px;animation:shakeAviso .45s ease;';
+  aviso.innerHTML=`<span style="font-size:22px;flex-shrink:0;">⚠️</span><div style="flex:1;"><div style="font-size:14px;font-weight:700;color:#92400e;margin-bottom:3px;">Datos incompletos</div><div style="font-size:13px;color:#78350f;line-height:1.5;" id="aviso-txt-${rid}"></div></div><button onclick="this.parentElement.remove()" style="background:none;border:none;cursor:pointer;font-size:20px;color:#b45309;padding:0 2px;flex-shrink:0;line-height:1;">✕</button>`;
+  riCard.insertBefore(aviso,riCard.firstChild);
+  document.getElementById('aviso-txt-'+rid).innerHTML=msg;
+  setTimeout(()=>{const el=document.getElementById('aviso-'+rid);if(el)el.remove();},6000);
+  setTimeout(()=>aviso.scrollIntoView({behavior:'smooth',block:'center'}),50);
+}
+
+function iniciarRiego(pid,rid){
+  const p=parcelasActivas.find(x=>x.id===pid);if(!p)return;
+  const r=p.riegos.find(x=>x.id===rid);if(!r)return;
+  const errores=[];
+  if(!p.nombre.trim()) errores.push('• Escribe el nombre de la tierra.');
+  if(!p.cultivo) errores.push('• Selecciona el tipo de cultivo (Patatas, Remolacha...).');
+  const m3ini=parseFloat(r.m3ini);
+  if(isNaN(m3ini)||r.m3ini==='') errores.push('• Introduce la lectura del contador de m\u00b3 al inicio.');
+  if(errores.length>0){ mostrarAviso(rid,errores.join('<br>')); return; }
+  const prev=document.getElementById('aviso-'+rid);if(prev)prev.remove();
+  r.inicioTS=new Date().toISOString();
+  renderParcelasActivas();
+}
+function finalizarRiego(pid,rid){
+  const p=parcelasActivas.find(x=>x.id===pid);if(!p)return;
+  const r=p.riegos.find(x=>x.id===rid);if(!r)return;
+  if(!r.inicioTS){mostrarAviso(rid,'• Primero pulsa Iniciar riego.');return;}
+  if(r.finTS)return;
+  const m3fin=parseFloat(r.m3fin);
+  if(isNaN(m3fin)||r.m3fin==='')  {mostrarAviso(rid,'• Introduce la lectura del contador de m³ al <b>final</b> antes de finalizar.');return;}
+  r.finTS=new Date().toISOString();
+  const diff=Math.floor((new Date(r.finTS)-new Date(r.inicioTS))/1000);
+  const h=Math.floor(diff/3600),m=Math.floor((diff%3600)/60);
+  r.duracion=(h>0?h+'h ':'')+m+'min';
+  calcConsumo(r);
+  renderParcelasActivas();
+}
+function setM3(pid,rid,tipo,val){
+  const p=parcelasActivas.find(x=>x.id===pid);if(!p)return;
+  const r=p.riegos.find(x=>x.id===rid);if(!r)return;
+  if(tipo==='ini')r.m3ini=val;else r.m3fin=val;
+  calcConsumo(r);
+  guardarParcelasActivas();
+  // Actualizar m³ consumidos
+  const el=document.getElementById('cv-'+rid);
+  if(el)el.textContent=r.consumo!=='—'?r.consumo+' m³':'—';
+  // Actualizar L/m² en vivo dentro del panel azul
+  const lm2El=document.getElementById('lm2-'+rid);
+  if(lm2El){
+    const ha=parseFloat(p.hectareas)||0;
+    const m3=parseFloat(r.consumo);
+    if(!isNaN(m3)&&r.consumo!=='—'&&ha>0){
+      lm2El.className='consumo-val';
+      lm2El.style.fontSize='26px';
+      lm2El.textContent=(m3*1000/(ha*10000)).toFixed(2);
+    } else {
+      lm2El.className='';
+      lm2El.style.fontSize='13px';
+      lm2El.style.color='rgba(255,255,255,0.55)';
+      lm2El.style.marginTop='4px';
+      lm2El.textContent='Pon ha y m³';
+    }
+  }
+}
+function calcConsumo(r){
+  const a=parseFloat(r.m3ini),b=parseFloat(r.m3fin);
+  r.consumo=(!isNaN(a)&&!isNaN(b)&&b>=a)?String(b-a):'—';
+}
+// Helpers para convertir ISO timestamp a fecha/hora local
+function toLocalDateStr(isoTS){
+  const d=new Date(isoTS);
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,'0');
+  const day=String(d.getDate()).padStart(2,'0');
+  return y+'-'+m+'-'+day;
+}
+function toLocalTimeStr(isoTS){
+  const d=new Date(isoTS);
+  return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+// Guarda fecha o hora por separado y recalcula cuando ambos están presentes
+function setHoraManualParte(pid,rid,tipo,parte,val){
+  const p=parcelasActivas.find(x=>x.id===pid);if(!p)return;
+  const r=p.riegos.find(x=>x.id===rid);if(!r)return;
+  // Guardamos en campos temporales por riego
+  if(!r._manual)r._manual={};
+  if(!r._manual[tipo])r._manual[tipo]={};
+  r._manual[tipo][parte]=val;
+  // Si ya tenemos fecha y hora, construimos el timestamp
+  const fecha=r._manual[tipo].fecha||(r.inicioTS&&tipo==='ini'?toLocalDateStr(r.inicioTS):r.finTS&&tipo==='fin'?toLocalDateStr(r.finTS):'');
+  const hora=r._manual[tipo].hora||(r.inicioTS&&tipo==='ini'?toLocalTimeStr(r.inicioTS):r.finTS&&tipo==='fin'?toLocalTimeStr(r.finTS):'');
+  if(!fecha||!hora){guardarParcelasActivas();return;}
+  const ts=new Date(fecha+'T'+hora+':00').toISOString();
+  if(tipo==='ini'){r.inicioTS=ts;r.inicioManual=true;}
+  else{r.finTS=ts;r.finManual=true;}
+  if(r.inicioTS&&r.finTS){
+    const diff=Math.floor((new Date(r.finTS)-new Date(r.inicioTS))/1000);
+    if(diff>0){const h=Math.floor(diff/3600),m=Math.floor((diff%3600)/60);r.duracion=(h>0?h+'h ':'')+m+'min';}
+    else{r.duracion='—';}
+  }
+  guardarParcelasActivas();
+  // Solo re-renderizamos el status y la duración sin destruir los inputs
+  const statusEl=document.querySelector('#ri-'+rid+' .status-grande');
+  if(statusEl)statusEl.outerHTML=statusHTML(r).match(/<div class="status-grande[^>]*>[\s\S]*?<\/div>\s*<\/div>/)?.[0]||'';
+  const cvEl=document.getElementById('cv-'+rid);
+  if(cvEl&&r.consumo!=='—')cvEl.textContent=r.consumo+' m³';
+}
+function setHoraManual(pid,rid,tipo,val){
+  const p=parcelasActivas.find(x=>x.id===pid);if(!p)return;
+  const r=p.riegos.find(x=>x.id===rid);if(!r)return;
+  if(!val){
+    if(tipo==='ini'){r.inicioTS=null;r.inicioManual=false;}else{r.finTS=null;r.finManual=false;r.duracion='—';}
+    guardarParcelasActivas();renderParcelasActivas();return;
+  }
+  const ts=new Date(val).toISOString();
+  if(tipo==='ini'){
+    r.inicioTS=ts;
+    r.inicioManual=true;
+  }else{
+    r.finTS=ts;
+    r.finManual=true;
+  }
+  // recalculate duration
+  if(r.inicioTS&&r.finTS){
+    const diff=Math.floor((new Date(r.finTS)-new Date(r.inicioTS))/1000);
+    if(diff>0){const h=Math.floor(diff/3600),m=Math.floor((diff%3600)/60);r.duracion=(h>0?h+'h ':'')+m+'min';}
+    else{r.duracion='—';}
+  }
+  guardarParcelasActivas();renderParcelasActivas();
+}
+function toggleMapMenu(pid){
+  const pop=document.getElementById('mappop-'+pid);if(!pop)return;
+  const isOpen=pop.classList.contains('open');
+  // close all
+  document.querySelectorAll('.map-popup.open').forEach(el=>el.classList.remove('open'));
+  if(!isOpen)pop.classList.add('open');
+}
+function cerrarMapMenu(pid){
+  const pop=document.getElementById('mappop-'+pid);if(pop)pop.classList.remove('open');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.map-wrap'))document.querySelectorAll('.map-popup.open').forEach(el=>el.classList.remove('open'));
+});
+function setInc(pid,rid,val){
+  const p=parcelasActivas.find(x=>x.id===pid);if(!p)return;
+  const r=p.riegos.find(x=>x.id===rid);if(!r)return;
+  r.incidencias=val;
+  guardarParcelasActivas();
+}
+function addIncTag(pid,rid,tag){
+  const p=parcelasActivas.find(x=>x.id===pid);if(!p)return;
+  const r=p.riegos.find(x=>x.id===rid);if(!r)return;
+  r.incidencias=r.incidencias?(r.incidencias+'\n'+tag):tag;
+  const ta=document.getElementById('inc-ta-'+rid);
+  if(ta)ta.value=r.incidencias;
+}
+function toggleInc(rid){
+  const panel=document.getElementById('inc-panel-'+rid);
+  const arrow=document.getElementById('inc-arr-'+rid);
+  if(!panel)return;
+  const open=panel.style.display==='block';
+  panel.style.display=open?'none':'block';
+  if(arrow)arrow.style.transform=open?'':'rotate(180deg)';
+}
+function statusHTML(r){
+  const iniciado=!!r.inicioTS,finalizado=!!r.finTS;
+  if(finalizado){
+    return `<div class="status-grande sg-fin">
+      <span class="sg-emoji">✅</span>
+      <div class="sg-texto">
+        <div class="sg-titulo">Riego finalizado</div>
+        <div class="sg-sub">Inicio ${fmtHora(new Date(r.inicioTS))} · Fin ${fmtHora(new Date(r.finTS))}${r.duracion!=='—'?' · '+r.duracion:''}</div>
+      </div>
+      <div class="sg-dot sg-dot-fin"></div>
+    </div>`;
+  } else if(iniciado){
+    return `<div class="status-grande sg-regando">
+      <span class="sg-emoji">💧</span>
+      <div class="sg-texto">
+        <div class="sg-titulo">¡Regando ahora!</div>
+        <div class="sg-sub">Inicio a las ${fmtHora(new Date(r.inicioTS))}</div>
+      </div>
+      <div class="sg-dot sg-dot-regando"></div>
+    </div>`;
+  } else {
+    return `<div class="status-grande sg-espera">
+      <span class="sg-emoji">⏳</span>
+      <div class="sg-texto">
+        <div class="sg-titulo">En espera</div>
+        <div class="sg-sub">Pulsa Iniciar cuando empiece el riego</div>
+      </div>
+      <div class="sg-dot sg-dot-espera"></div>
+    </div>`;
+  }
+}
+function renderParcelasActivas(){
+  guardarParcelasActivas();
+  const cont=document.getElementById('parcelas-riego-list');
+  if(parcelasActivas.length===0){cont.innerHTML='';return;}
+  cont.innerHTML=parcelasActivas.map(p=>{
+    const colorCls=COLORS[p.colorIdx];
+    const cSVG=p.cultivo&&CULTIVO_SVG[p.cultivo]?CULTIVO_SVG[p.cultivo]:'';
+    const cultivoGrid=`<div class="cult-section">
+      <span class="cult-label">🌿 Cultivo</span>
+      <div class="cult-chips">
+        ${CULTIVO_NAMES.map(c=>`<button class="cult-chip${p.cultivo===c?' sel':''}" onclick="setCultivo('${p.id}','${c}')">${CULTIVO_EMOJI[c]} ${c}</button>`).join('')}
+      </div>
+    </div>`;
+    const riegosHTML=p.riegos.map((r,ri)=>{
+      const iniciado=!!r.inicioTS,finalizado=!!r.finTS;
+      const consumoStr=r.consumo!=='—'?r.consumo+' m³':'—';
+      return `<div class="riego-interno" id="ri-${r.id}">
+        <div class="ri-header">
+          <span class="ri-title">Riego ${ri+1}</span>
+          <button class="ri-del-btn" onclick="quitarRiego('${p.id}','${r.id}')">✕ Quitar</button>
+        </div>
+        ${statusHTML(r)}
+        <div class="m3-row">
+          <div class="m3-box m3-ini">
+            <label>💧 m³ inicio</label>
+            <input type="number" placeholder="0" step="1" inputmode="numeric" value="${r.m3ini}"
+              oninput="setM3('${p.id}','${r.id}','ini',this.value)"/>
+            <div class="m3-unit">metros cúbicos</div>
+          </div>
+          <div class="m3-box m3-fin">
+            <label>💧 m³ final</label>
+            <input type="number" placeholder="0" step="1" inputmode="numeric" value="${r.m3fin}"
+              oninput="setM3('${p.id}','${r.id}','fin',this.value)"/>
+            <div class="m3-unit">metros cúbicos</div>
+          </div>
+        </div>
+        <div class="round-btns">
+          <button class="rbtn" onclick="iniciarRiego('${p.id}','${r.id}')">
+            <div class="rbtn-circle rbc-ini"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <span class="rbtn-label">Iniciar</span>
+          </button>
+          <button class="rbtn" onclick="finalizarRiego('${p.id}','${r.id}')">
+            <div class="rbtn-circle ${iniciado&&!finalizado?'rbc-fin':'rbc-dis'}"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="3"/></svg></div>
+            <span class="rbtn-label">Finalizar</span>
+          </button>
+        </div>
+        <div class="hora-manual-row">
+          <div class="hora-manual-box hmb-ini">
+            <label>🕐 Hora inicio</label>
+            <div class="hm-inputs">
+              <input type="date" value="${r.inicioTS?toLocalDateStr(r.inicioTS):''}"
+                onchange="setHoraManualParte('${p.id}','${r.id}','ini','fecha',this.value)"/>
+              <input type="time" value="${r.inicioTS?toLocalTimeStr(r.inicioTS):''}"
+                onchange="setHoraManualParte('${p.id}','${r.id}','ini','hora',this.value)"/>
+            </div>
+            <div class="hm-hint">${r.inicioTS&&!r.inicioManual?'✓ Registrado con botón':'Pon fecha y hora si no pulsaste Iniciar'}</div>
+          </div>
+          <div class="hora-manual-box hmb-fin">
+            <label>🕐 Hora fin</label>
+            <div class="hm-inputs">
+              <input type="date" value="${r.finTS?toLocalDateStr(r.finTS):''}"
+                onchange="setHoraManualParte('${p.id}','${r.id}','fin','fecha',this.value)"/>
+              <input type="time" value="${r.finTS?toLocalTimeStr(r.finTS):''}"
+                onchange="setHoraManualParte('${p.id}','${r.id}','fin','hora',this.value)"/>
+            </div>
+            <div class="hm-hint">${r.finTS&&!r.finManual?'✓ Registrado con botón':'Pon fecha y hora si no pulsaste Finalizar'}</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.75rem;">
+          <div class="consumo-display" style="margin-bottom:0;">
+            <div class="consumo-label">💧 Agua consumida</div>
+            <div class="consumo-val" id="cv-${r.id}">${consumoStr}</div>
+            ${r.duracion!=='—'?`<div class="dur-badge">⏱ ${r.duracion}</div>`:''}
+          </div>
+          <div class="consumo-display" style="margin-bottom:0;background:linear-gradient(135deg,#1e3a8a,#2563eb);" id="lm2-box-${r.id}">
+            <div class="consumo-label">📐 Litros/m²</div>
+            ${(r.consumo!=='—'&&p.hectareas&&parseFloat(p.hectareas)>0)
+              ?`<div class="consumo-val" style="font-size:26px;" id="lm2-${r.id}">${(parseFloat(r.consumo)*1000/(parseFloat(p.hectareas)*10000)).toFixed(2)}</div><div class="dur-badge" style="background:rgba(255,255,255,0.18);">L por m²</div>`
+              :`<div style="font-size:13px;color:rgba(255,255,255,0.55);margin-top:4px;" id="lm2-${r.id}">Pon ha y m³</div>`}
+          </div>
+        </div>
+        <div style="margin-top:.6rem;">
+          <button class="inc-toggle" onclick="toggleInc('${r.id}')">
+            <span>⚠️ Incidencias${r.incidencias?' ('+r.incidencias.split('\n').filter(Boolean).length+')':''}</span>
+            <svg id="inc-arr-${r.id}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#92400e" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="inc-panel" id="inc-panel-${r.id}">
+            <div class="inc-tags">
+              <span class="inc-tag" onclick="addIncTag('${p.id}','${r.id}','Aspersor atascado')">🔧 Atasco</span>
+              <span class="inc-tag" onclick="addIncTag('${p.id}','${r.id}','Lluvia')">🌧 Lluvia</span>
+              <span class="inc-tag" onclick="addIncTag('${p.id}','${r.id}','Viento fuerte')">💨 Viento</span>
+              <span class="inc-tag" onclick="addIncTag('${p.id}','${r.id}','Fallo de presión')">⚠️ Presión</span>
+              <span class="inc-tag" onclick="addIncTag('${p.id}','${r.id}','Tubería rota')">💧 Tubería</span>
+              <span class="inc-tag" onclick="addIncTag('${p.id}','${r.id}','Corte de luz')">⚡ Luz</span>
+            </div>
+            <textarea class="inc-textarea" id="inc-ta-${r.id}" placeholder="Describe la incidencia..."
+              oninput="setInc('${p.id}','${r.id}',this.value)">${r.incidencias||''}</textarea>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    return `<div class="parcela-riego">
+      <div class="pr-header ${colorCls}">
+        <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">
+          ${cSVG?`<div class="pr-cultivo-svg">${cSVG}</div>`:'<div style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,0.2);flex-shrink:0;"></div>'}
+          <div>
+            <div class="pr-nombre">${p.nombre||'Nueva parcela'}</div>
+            <div class="pr-sub">${p.cultivo||'Selecciona cultivo'}${p.hectareas?' · '+p.hectareas+' ha':''}</div>
+          </div>
+        </div>
+        <button class="pr-del" onclick="quitarParcela('${p.id}')">✕</button>
+      </div>
+      <div class="pr-body">
+        <div class="fr2" style="margin-bottom:12px;align-items:end;">
+          <div class="f" style="margin-bottom:0;">
+            <label>Nombre de la tierra</label>
+            <input type="text" placeholder="La Vega, El Prado..." value="${p.nombre}" autocomplete="off" oninput="setNombre('${p.id}',this.value);mostrarSugerencias('${p.id}',this)" onblur="ocultarSugerencias('${p.id}')"/>
+          </div>
+          <div class="f" style="margin-bottom:0;">
+            <label>Hectáreas</label>
+            <div style="display:flex;gap:6px;align-items:stretch;">
+              <input type="number" placeholder="0.00" step="0.01" value="${p.hectareas}"
+                onchange="setHa('${p.id}',this.value)" style="flex:1;min-width:0;"/>
+              <div class="map-wrap" id="mapwrap-${p.id}">
+                <button class="map-btn" onclick="toggleMapMenu('${p.id}')">🗺 Ver</button>
+                <div class="map-popup" id="mappop-${p.id}">
+                  <a class="map-opt" href="https://maps.google.com/maps?q=${encodeURIComponent(p.nombre||'parcela')}" target="_blank" onclick="cerrarMapMenu('${p.id}')">
+                    <div class="map-opt-ico" style="background:#e8f5e9;">🟢</div>
+                    <div><div class="map-opt-txt">Google Maps</div><div class="map-opt-sub">Abre la app de Maps</div></div>
+                  </a>
+                  <a class="map-opt" href="https://sigpac.mapa.gob.es/fega/visor/" target="_blank" onclick="cerrarMapMenu('${p.id}');abrirSigpac(event,'${encodeURIComponent(p.nombre||'')}')">
+                    <div class="map-opt-ico" style="background:#e3f2fd;">🗺</div>
+                    <div><div class="map-opt-txt">SIGPAC Visor</div><div class="map-opt-sub">Abre en Safari · Busca tu parcela</div></div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="f" style="margin-bottom:12px;">
+          <label>📍 Zona de Riego</label>
+          <input type="text" placeholder="Arcellares, Reverdido, Pomar, Covalagua..." value="${p.zona||''}" autocomplete="off" list="zonas-list-${p.id}"
+            oninput="setZona('${p.id}',this.value)" style="border:2px solid #d1fae5;background:#f0fdf4;color:#14532d;"/>
+          <datalist id="zonas-list-${p.id}">${zonasConocidas().map(z=>`<option value="${z}"></option>`).join('')}</datalist>
+        </div>
+        ${cultivoGrid}
+        ${riegosHTML}
+        <input type="file" accept="image/*" capture="environment" id="foto-inp-${p.id}" style="display:none;" onchange="adjuntarFoto('${p.id}',this)"/>
+        ${p.foto
+          ?`<div class="foto-thumb-wrap"><img class="foto-thumb" src="${p.foto}" alt="Foto parcela"/><button class="foto-del" onclick="quitarFoto('${p.id}')">✕</button></div>`
+          :`<button class="foto-btn" onclick="document.getElementById('foto-inp-${p.id}').click()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803d" stroke-width="2.2" stroke-linecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>📷 Añadir foto de la parcela</button>`}
+        <button class="add-riego-btn" id="addriego-${p.id}" onclick="agregarRiego('${p.id}')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Añadir riego
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+// ===== GUARDAR =====
+function guardarRegistro(){
+  if(parcelasActivas.length===0){alert('Añade al menos una parcela.');return;}
+  for(const p of parcelasActivas){
+    if(!p.nombre.trim()){alert('Pon nombre a todas las parcelas.');return;}
+    if(p.riegos.length===0){alert('Añade al menos un riego a: '+p.nombre);return;}
+    if(p.riegos.some(r=>!r.inicioTS)){alert('Pon la hora de inicio en todos los riegos de "'+p.nombre+'" (usa los botones o la entrada manual).');return;}
+  }
+  parcelasActivas.forEach(p=>{
+    db.registros.push({
+      id:Date.now()+Math.random(),
+      campana:campanaActual,
+      nombre:p.nombre.trim(),
+      cultivo:p.cultivo,
+      hectareas:p.hectareas,
+      zona:p.zona||'',
+      foto:p.foto||null,
+      riegos:p.riegos.map(r=>({inicioTS:r.inicioTS,finTS:r.finTS,m3ini:r.m3ini,m3fin:r.m3fin,consumo:r.consumo,duracion:r.duracion,incidencias:r.incidencias}))
+    });
+  });
+  guardarDB();actualizarStats();
+  toast('¡Guardado correctamente ✓');
+  limpiarFormulario();
+}
+function limpiarFormulario(){parcelasActivas=[];pCounter=0;try{localStorage.removeItem('riegos_activas');}catch(e){}renderParcelasActivas();}
+// ===== TABS =====
+function showTab(tab){
+  document.getElementById('pane-nuevo').style.display=tab==='nuevo'?'block':'none';
+  document.getElementById('pane-historial').style.display=tab==='historial'?'block':'none';
+  document.getElementById('pane-tratamientos').style.display=tab==='tratamientos'?'block':'none';
+  document.getElementById('tab-nuevo').className='tab'+(tab==='nuevo'?' active':'');
+  document.getElementById('tab-hist').className='tab'+(tab==='historial'?' active':'');
+  document.getElementById('tab-trat').className='tab tab-trat'+(tab==='tratamientos'?' active':'');
+  if(tab==='historial')renderHistorial();
+  if(tab==='tratamientos'){renderTratForm();renderHistorialTrat();}
+}
+// ===== HISTORIAL =====
+function renderHistorial(){
+  const campNombre=db.campanas.find(c=>c.id===campanaActual)?.nombre||campanaActual;
+  document.getElementById('hist-camp-title').textContent=campNombre;
+  const regs=db.registros.filter(r=>r.campana===campanaActual);
+  const cont=document.getElementById('parcelas-container');
+  if(regs.length===0){
+    cont.innerHTML='<div class="empty"><div style="font-size:3rem;margin-bottom:.75rem;">🥔</div><div style="font-size:15px;font-weight:500;">No hay registros en esta campaña.</div></div>';
+    return;
+  }
+  const mapa={};
+  regs.forEach(reg=>{
+    const key=reg.nombre.trim().toLowerCase();
+    if(!mapa[key]){mapa[key]={nombre:reg.nombre,cultivo:reg.cultivo,hectareas:reg.hectareas,zona:reg.zona||'',registros:[]};}
+    mapa[key].registros.push(reg);
+  });
+  const parcelas=Object.values(mapa);
+  cont.innerHTML=parcelas.map((p,pi)=>{
+    let tr=0,tm=0,todosRiegos=[];
+    p.registros.forEach(reg=>{
+      if(reg.riegos)reg.riegos.forEach((r,ri)=>{
+        tr++;
+        const c=parseFloat(r.consumo);if(!isNaN(c))tm+=c;
+        todosRiegos.push({...r,regId:reg.id,riIdx:ri});
+      });
+    });
+    const emoji=CULTIVO_EMOJI[p.cultivo]||'🌿';
+    const haP=parseFloat(p.hectareas)||0;
+    const riegosHTML=todosRiegos.map((r,i)=>{
+      const d=new Date(r.inicioTS);
+      const regIdStr=JSON.stringify(r.regId);
+      const editId=`edit-${pi}-${i}`;
+      const iniD=r.inicioTS?new Date(r.inicioTS):null;
+      const finD=r.finTS?new Date(r.finTS):null;
+      const iniFecha=iniD?`${iniD.getFullYear()}-${pad(iniD.getMonth()+1)}-${pad(iniD.getDate())}` :'';
+      const iniHora=iniD?`${pad(iniD.getHours())}:${pad(iniD.getMinutes())}` :'';
+      const finFecha=finD?`${finD.getFullYear()}-${pad(finD.getMonth()+1)}-${pad(finD.getDate())}` :'';
+      const finHora=finD?`${pad(finD.getHours())}:${pad(finD.getMinutes())}` :'';
+      const m3r=parseFloat(r.consumo);
+      const lm2hist=(!isNaN(m3r)&&haP>0)?(m3r*1000/(haP*10000)).toFixed(2)+' L/m²':'';
+      return `<div class="ri-h">
+        <div class="ri-h-top">
+          <div class="ri-num">${i+1}</div>
+          <div class="ri-info">
+            <div class="ri-fecha">${DS[d.getDay()]} ${d.getDate()} ${MS[d.getMonth()]} ${d.getFullYear()}</div>
+            <div class="ri-detalle">${fmtHora(d)}${r.m3ini?' · Ini: '+r.m3ini+' m³':''}${r.m3fin?' · Fin: '+r.m3fin+' m³':''}${r.duracion&&r.duracion!=='—'?' · '+r.duracion:''}</div>
+            ${lm2hist?`<span class="ri-inc" style="background:#eff6ff;border-color:#bfdbfe;color:#1e40af;">📐 ${lm2hist}</span>`:''}
+            ${r.incidencias?`<span class="ri-inc">⚠️ ${r.incidencias.substring(0,70)}${r.incidencias.length>70?'...':''}</span>`:''}
+          </div>
+          <div class="ri-consumo">${r.consumo!=='—'?r.consumo+' m³':r.consumo}</div>
+        </div>
+        <button class="ri-edit-btn" onclick="toggleEditRiego('${editId}')">✏️ Editar datos de este riego</button>
+        <div class="ri-edit-panel" id="${editId}">
+          <div class="ri-edit-title">✏️ Corrección de datos</div>
+          <div style="margin-bottom:.65rem;">
+            <label style="font-size:10px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:3px;">📍 Zona de riego</label>
+            <input type="text" id="${editId}-zona" value="${p.zona||''}" placeholder="Arcellares, Reverdido, Pomar..." list="zonas-edit-list-${editId}"
+              style="width:100%;border:2px solid #bbf7d0;border-radius:8px;padding:6px 10px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;background:#f0fdf4;color:#14532d;outline:none;"/>
+            <datalist id="zonas-edit-list-${editId}">${zonasConocidas().map(z=>`<option value="${z}"></option>`).join('')}</datalist>
+          </div>
+          <div class="ri-edit-grid">
+            <div class="ri-edit-box verde">
+              <label>💧 m³ inicio</label>
+              <input type="number" id="${editId}-m3ini" value="${r.m3ini||''}" placeholder="0" step="1" inputmode="numeric"/>
+            </div>
+            <div class="ri-edit-box verde">
+              <label>💧 m³ final</label>
+              <input type="number" id="${editId}-m3fin" value="${r.m3fin||''}" placeholder="0" step="1" inputmode="numeric"/>
+            </div>
+          </div>
+          <div class="ri-edit-grid">
+            <div class="ri-edit-box verde">
+              <label>🟢 Inicio — fecha</label>
+              <input type="date" id="${editId}-ini-fecha" value="${iniFecha}"/>
+              <label style="margin-top:4px;">hora</label>
+              <input type="time" id="${editId}-ini-hora" value="${iniHora}"/>
+            </div>
+            <div class="ri-edit-box azul">
+              <label>🔵 Fin — fecha</label>
+              <input type="date" id="${editId}-fin-fecha" value="${finFecha}"/>
+              <label style="margin-top:4px;">hora</label>
+              <input type="time" id="${editId}-fin-hora" value="${finHora}"/>
+            </div>
+          </div>
+          <button class="ri-edit-save" onclick="guardarEdicionRiego('${editId}',${regIdStr},${r.riIdx},${pi})">💾 Guardar corrección</button>
+        </div>
+        <button class="btn-del-hist" onclick="eliminarRegistro(${regIdStr})">🗑 Eliminar este registro</button>
+      </div>`;
+    }).join('');
+    const lm2total=(tm>0&&haP>0)?(tm*1000/(haP*10000)).toFixed(2):'';
+    return `<div class="parcela-group">
+      <div class="ph" onclick="toggleParcela('hpg-${pi}','harr-${pi}')">
+        <div class="ph-icon ${HIST_CLS[pi%5]}">${emoji}</div>
+        <div style="flex:1;min-width:0;">
+          <div class="ph-nombre">${p.nombre}</div>
+          <div class="ph-sub">${p.cultivo||'Sin cultivo'}${p.hectareas?' · '+p.hectareas+' ha':''}</div>
+          ${p.zona?`<div style="font-size:10px;color:#9ca3af;font-weight:600;margin-top:1px;">📍 ${p.zona}</div>`:''}
+        </div>
+        <div class="ph-counters">
+          <div class="pctr"><div class="pctr-num pctr-g">${tr}</div><div class="pctr-lbl">${tr===1?'riego':'riegos'}</div></div>
+          <div class="pctr"><div class="pctr-num pctr-b">${tm>0?Math.round(tm):'—'}</div><div class="pctr-lbl">m³</div></div>
+          ${lm2total?`<div class="pctr"><div class="pctr-num pctr-p">${lm2total}</div><div class="pctr-lbl">L/m²</div></div>`:''}
+        </div>
+        <svg style="margin-left:8px;flex-shrink:0;transition:transform .2s;" id="harr-${pi}" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="parcela-riegos" id="hpg-${pi}">
+        ${p.registros.some(r=>r.foto)?`<div style="padding:.75rem 1.1rem 0;"><img class="hist-foto" src="${p.registros.find(r=>r.foto).foto}" alt="Foto parcela"/></div>`:''}
+        ${riegosHTML}
+      </div>
+    </div>`;
+  }).join('');
+  // Resumen por zonas al final
+  const resPanel=document.getElementById('resumen-riegos-panel');
+  if(resPanel)renderResumenRiegosPorZonas(resPanel,regs);
+}
+function toggleParcela(id,arrId){
+  const el=document.getElementById(id),arr=document.getElementById(arrId);
+  const open=el.style.display==='block';
+  el.style.display=open?'none':'block';
+  if(arr)arr.style.transform=open?'':'rotate(180deg)';
+}
+function toggleEditRiego(editId){
+  const panel=document.getElementById(editId);
+  if(!panel)return;
+  const open=panel.classList.contains('open');
+  panel.classList.toggle('open',!open);
+  const btn=panel.previousElementSibling;
+  if(btn)btn.textContent=open?'✏️ Editar datos de este riego':'✖ Cerrar edición';
+}
+function guardarEdicionRiego(editId,regId,riIdx,parcelaIdx){
+  const reg=db.registros.find(r=>r.id===regId);
+  if(!reg||!reg.riegos[riIdx]){toast('⚠️ No se encontró el riego');return;}
+  const r=reg.riegos[riIdx];
+  // zona (guardada en el registro padre)
+  const zonaInp=document.getElementById(editId+'-zona');
+  if(zonaInp&&zonaInp.value.trim())reg.zona=zonaInp.value.trim();
+  // m3
+  const m3ini=document.getElementById(editId+'-m3ini').value;
+  const m3fin=document.getElementById(editId+'-m3fin').value;
+  r.m3ini=m3ini;
+  r.m3fin=m3fin;
+  const a=parseFloat(m3ini),b=parseFloat(m3fin);
+  r.consumo=(!isNaN(a)&&!isNaN(b)&&b>=a)?String(b-a):'—';
+  // inicio
+  const iniFecha=document.getElementById(editId+'-ini-fecha').value;
+  const iniHora=document.getElementById(editId+'-ini-hora').value;
+  if(iniFecha&&iniHora){r.inicioTS=new Date(iniFecha+'T'+iniHora+':00').toISOString();}
+  else if(iniFecha){r.inicioTS=new Date(iniFecha+'T00:00:00').toISOString();}
+  // fin
+  const finFecha=document.getElementById(editId+'-fin-fecha').value;
+  const finHora=document.getElementById(editId+'-fin-hora').value;
+  if(finFecha&&finHora){r.finTS=new Date(finFecha+'T'+finHora+':00').toISOString();}
+  else if(!finFecha&&!finHora){r.finTS=null;}
+  // duración
+  if(r.inicioTS&&r.finTS){
+    const diff=Math.floor((new Date(r.finTS)-new Date(r.inicioTS))/1000);
+    if(diff>0){const h=Math.floor(diff/3600),m=Math.floor((diff%3600)/60);r.duracion=(h>0?h+'h ':'')+m+'min';}
+    else r.duracion='—';
+  }
+  guardarDB();actualizarStats();
+  toast('✅ Riego corregido y guardado');
+  renderHistorial();
+}
+function eliminarRegistro(id){
+  pedirConfirm('🗑','¿Eliminar este registro?','Esta acción no se puede deshacer. El registro desaparecerá del historial.',function(){
+    db.registros=db.registros.filter(r=>r.id!==id);
+    guardarDB();actualizarStats();renderHistorial();
+  });
+}
+// ===== TRATAMIENTOS =====
+if(!db.tratamientos)db.tratamientos=[];
+if(!db.catalogo)db.catalogo=[];
+// Limpiar productos del catálogo que no tengan nombre real
+db.catalogo=db.catalogo.filter(p=>p.nombre&&p.nombre.trim().length>0);
+let tratActivo=null;
+let cubCounter=0;
+let prodCounter=0;
+// Estado temporal para edición de parcelas en tratamientos guardados
+// Clave: 'tid_ci' (id del tratamiento + índice de cuba)
+let _editTratParc={};
+function guardarTratActivo(){try{localStorage.setItem('trat_activo_v2',JSON.stringify({tratActivo,cubCounter,prodCounter}));}catch(e){}}
+function cargarTratActivo(){
+  try{const d=JSON.parse(localStorage.getItem('trat_activo_v2')||'null');
+  if(d&&d.tratActivo){tratActivo=d.tratActivo;cubCounter=d.cubCounter||0;prodCounter=d.prodCounter||0;return true;}}catch(e){}
+  // migrate old v1
+  try{const d=JSON.parse(localStorage.getItem('trat_activo_v1')||'null');
+  if(d&&d.tratActivo&&d.tratActivo.cubas){
+    const t=d.tratActivo;
+    t.cubas=t.cubas.map((c,ci)=>({...c,litrosAgua:'',litrosReales:'',
+      productos:[{id:'pp'+(ci+1),nombre:t.producto||'',dosisHa:t.dosisHa||'',cantidad:c.cantidad||'',unidad:c.unidad||'L'}]}));
+    tratActivo=t;cubCounter=d.cubCounter||0;prodCounter=t.cubas.length;return true;}}catch(e){}
+  return false;
+}
+function nuevoTratamiento(){
+  const hoy=new Date();
+  const ymd=hoy.getFullYear()+'-'+pad(hoy.getMonth()+1)+'-'+pad(hoy.getDate());
+  tratActivo={fecha:ymd,cubas:[]};
+  cubCounter=0;prodCounter=0;
+  agregarCuba();
+  guardarTratActivo();
+  renderTratForm();
+  renderHistorialTrat();
+}
+function agregarCuba(){
+  cubCounter++;prodCounter++;
+  if(!tratActivo)return;
+  tratActivo.cubas.push({id:'c'+cubCounter,litrosAgua:'',litrosReales:'',litrosCaldo:'',parcelas:[],
+    productos:[{id:'pp'+prodCounter,nombre:'',dosisHa:'',cantidad:'',unidad:'L'}]});
+  guardarTratActivo();renderTratForm();
+}
+function quitarCuba(cid){
+  if(!tratActivo)return;
+  tratActivo.cubas=tratActivo.cubas.filter(c=>c.id!==cid);
+  guardarTratActivo();renderTratForm();
+}
+function setCubaAgua(cid,field,val){
+  if(!tratActivo)return;
+  const c=tratActivo.cubas.find(x=>x.id===cid);if(c){c[field]=val;guardarTratActivo();}
+}
+function agregarProductoCuba(cid){
+  if(!tratActivo)return;
+  const c=tratActivo.cubas.find(x=>x.id===cid);if(!c)return;
+  prodCounter++;
+  c.productos.push({id:'pp'+prodCounter,nombre:'',dosisHa:'',cantidad:'',unidad:'L'});
+  guardarTratActivo();renderTratForm();
+}
+function quitarProductoCuba(cid,pid){
+  if(!tratActivo)return;
+  const c=tratActivo.cubas.find(x=>x.id===cid);if(!c)return;
+  c.productos=c.productos.filter(p=>p.id!==pid);
+  guardarTratActivo();renderTratForm();
+}
+function setProducto(cid,pid,field,val){
+  if(!tratActivo)return;
+  const c=tratActivo.cubas.find(x=>x.id===cid);if(!c)return;
+  const p=c.productos.find(x=>x.id===pid);if(!p)return;
+  p[field]=val;guardarTratActivo();
+  if(field==='cantidad'||field==='unidad')actualizarTotales();
+}
+// Lookup ha from previous treatments for a parcela name
+function buscarHaParcela(nombre){
+  const nom=nombre.trim().toLowerCase();
+  for(const t of (db.tratamientos||[])){
+    for(const c of (t.cubas||[])){
+      for(const p of (c.parcelas||[])){
+        const pnom=(typeof p==='string'?p:p.nombre).toLowerCase();
+        const pha=typeof p==='object'?p.ha:'';
+        if(pnom===nom&&pha)return pha;
+      }
+    }
+  }
+  return '';
+}
+function addParcelaCuba(cid){
+  if(!tratActivo)return;
+  const inp=document.getElementById('tag-inp-'+cid);if(!inp)return;
+  const haInp=document.getElementById('ha-inp-'+cid);
+  const v=inp.value.trim();if(!v)return;
+  const c=tratActivo.cubas.find(x=>x.id===cid);if(!c)return;
+  const ha=haInp?haInp.value.trim():'';
+  const exists=c.parcelas.find(p=>(typeof p==='string'?p:p.nombre).toLowerCase()===v.toLowerCase());
+  if(!exists)c.parcelas.push({nombre:v,ha});
+  inp.value='';if(haInp)haInp.value='';
+  guardarTratActivo();renderTagsCuba(cid);
+}
+function addParcelaCubaEnter(cid,e){if(e.key==='Enter'||e.key===','){e.preventDefault();addParcelaCuba(cid);}}
+function removeParcelaCuba(cid,idx){
+  if(!tratActivo)return;
+  const c=tratActivo.cubas.find(x=>x.id===cid);if(!c)return;
+  c.parcelas.splice(idx,1);guardarTratActivo();renderTagsCuba(cid);actualizarHaTotal(cid);
+}
+function sanitizeHa(val){
+  if(typeof val!=='string')return val||'';
+  return val.replace(/\$\{[^}]*\}/g,'').trim();
+}
+function renderTagsCuba(cid){
+  const c=tratActivo?.cubas.find(x=>x.id===cid);if(!c)return;
+  const wrap=document.getElementById('tags-'+cid);if(!wrap)return;
+  wrap.innerHTML=c.parcelas.map((p,i)=>{
+    const nom=typeof p==='string'?p:p.nombre;
+    const ha=sanitizeHa(typeof p==='object'?p.ha:'');
+    return `<span class="ptag">${nom}${ha?' <span style="opacity:0.7;font-size:11px;">('+ha+'ha)</span>':''}<button class="ptag-x" onclick="removeParcelaCuba('${cid}',${i})">✕</button></span>`;
+  }).join('');
+  actualizarHaTotal(cid);
+}
+function actualizarHaTotal(cid){
+  const c=tratActivo?.cubas.find(x=>x.id===cid);if(!c)return;
+  const el=document.getElementById('ha-total-'+cid);if(!el)return;
+  let sum=0;c.parcelas.forEach(p=>{const ha=parseFloat(sanitizeHa(typeof p==='object'?p.ha:''));if(!isNaN(ha))sum+=ha;});
+  el.textContent=sum>0?'Total: '+Math.round(sum*100)/100+' ha tratadas':'';
+}
+function autocompletarHa(cid){
+  const inp=document.getElementById('tag-inp-'+cid);
+  const haInp=document.getElementById('ha-inp-'+cid);
+  if(!inp||!haInp)return;
+  const nom=inp.value.trim();
+  if(!nom)return;
+  const ha=buscarHaParcela(nom);
+  if(ha&&!haInp.value)haInp.value=ha;
+}
+function setTratFecha(v){if(!tratActivo)return;tratActivo.fecha=v;guardarTratActivo();
+  const bd=document.getElementById('dia-badge');if(bd){const d=new Date(v+'T12:00:00');bd.textContent=DS[d.getDay()];}
+}
+function convertirCanonica(cantidad,unidad){
+  const n=parseFloat(cantidad);if(isNaN(n))return 0;
+  if(unidad==='ml')return n/1000;
+  if(unidad==='cL')return n/100;
+  if(unidad==='g')return n/1000;
+  return n;
+}
+function canonicaUnidad(unidad){
+  if(unidad==='g'||unidad==='kg')return 'kg';
+  return 'L';
+}
+// Returns {nombreProducto -> {total, unidad}}
+function calcTotalesPorProducto(cubas){
+  const mapa={};
+  cubas.forEach(c=>{
+    (c.productos||[]).forEach(p=>{
+      if(!p.nombre.trim())return;
+      const nom=p.nombre.trim();
+      const base=canonicaUnidad(p.unidad);
+      const key=nom+'||'+base;
+      if(!mapa[key])mapa[key]={nombre:nom,total:0,unidad:base};
+      mapa[key].total+=convertirCanonica(p.cantidad,p.unidad);
+    });
+  });
+  return Object.values(mapa).map(x=>({...x,total:Math.round(x.total*1000)/1000}));
+}
+function actualizarTotales(){
+  if(!tratActivo)return;
+  const tots=calcTotalesPorProducto(tratActivo.cubas);
+  const cont=document.getElementById('totales-live');if(!cont)return;
+  if(tots.length===0||tots.every(t=>t.total===0)){cont.innerHTML='<div style="color:rgba(255,255,255,0.5);font-size:13px;">Rellena cantidades...</div>';return;}
+  cont.innerHTML=tots.map(t=>`<div class="tot-prod-row">
+    <span class="tot-prod-nom">${t.nombre}</span>
+    <span class="tot-prod-val">${t.total}</span><span class="tot-prod-unit">${t.unidad}</span>
+  </div>`).join('');
+}
+// Autocomplete de productos
+let _suggTargetCid=null;let _suggTargetPid=null;
+function mostrarProdSugg(inputEl,cid,pid){
+  _suggTargetCid=cid;_suggTargetPid=pid;
+  const v=inputEl.value.trim().toLowerCase();
+  const dropId='sugg-'+cid+'-'+pid;
+  const prev=document.getElementById(dropId);if(prev)prev.remove();
+  if(v.length===0)return;
+  const matches=db.catalogo.filter(p=>p.nombre.toLowerCase().includes(v));
+  if(matches.length===0)return;
+  const drop=document.createElement('div');
+  drop.id=dropId;drop.className='prod-sugg';
+  matches.forEach(p=>{
+    const item=document.createElement('div');
+    item.className='prod-sugg-item';
+    item.innerHTML=`<span class="prod-si-nom">${p.nombre}</span><span class="prod-si-dos">${p.dosisHa} ${p.dosisUnidad||p.unidad}/ha</span>`;
+    item.addEventListener('mousedown',e=>e.preventDefault());
+    const fn=()=>{seleccionarProductoCuba(cid,pid,p);drop.remove();};
+    item.addEventListener('click',fn);
+    item.addEventListener('touchend',e=>{e.preventDefault();fn();});
+    drop.appendChild(item);
+  });
+  inputEl.parentElement.appendChild(drop);
+}
+function ocultarProdSugg(cid,pid){
+  setTimeout(()=>{const el=document.getElementById('sugg-'+cid+'-'+pid);if(el)el.remove();},150);
+}
+function seleccionarProductoCuba(cid,pid,p){
+  if(!tratActivo)return;
+  const c=tratActivo.cubas.find(x=>x.id===cid);if(!c)return;
+  const pr=c.productos.find(x=>x.id===pid);if(!pr)return;
+  pr.nombre=p.nombre;pr.dosisHa=p.dosisHa;pr.dosisUnidad=p.dosisUnidad||canonicaUnidad(p.unidad);pr.unidad=p.unidad;
+  guardarTratActivo();renderTratForm();
+  toast('🌿 '+p.nombre+' cargado');
+}
+function actualizarCatalogo(cubas){
+  cubas.forEach(c=>{
+    (c.productos||[]).forEach(p=>{
+      if(!p.nombre.trim())return;
+      const nom=p.nombre.trim();
+      const idx=db.catalogo.findIndex(x=>x.nombre.toLowerCase()===nom.toLowerCase());
+      if(idx>=0){db.catalogo[idx].dosisHa=p.dosisHa;db.catalogo[idx].dosisUnidad=p.dosisUnidad||canonicaUnidad(p.unidad);db.catalogo[idx].unidad=p.unidad;}
+      else{db.catalogo.push({nombre:nom,dosisHa:p.dosisHa,dosisUnidad:p.dosisUnidad||canonicaUnidad(p.unidad),unidad:p.unidad});}
+    });
+  });
+  guardarDB();
+}
+// ===== FAVORITOS (top 5 del catálogo por uso reciente) =====
+function prodsFavoritos(){
+  // Últimos 6 productos usados, más recientes primero
+  return (db.catalogo||[]).slice(-6).reverse();
+}
+function renderFavoritosCuba(c){
+  const favs=prodsFavoritos();
+  if(favs.length===0)return '';
+  return `<div class="favs-section">
+    <span class="favs-label">⭐ Usados recientemente</span>
+    <div class="favs-chips">
+      ${favs.map((f,fi)=>`<div class="fav-chip">
+        <span onclick="usarFavorito('${c.id}',${fi})" style="display:flex;align-items:center;gap:5px;flex:1;">
+          <span class="fav-chip-ico">🌿</span>
+          <span class="fav-chip-nom">${f.nombre}</span>
+          ${f.dosisHa?`<span class="fav-chip-dos">${f.dosisHa} ${f.dosisUnidad||'L'}/ha</span>`:''}
+        </span>
+        <button onclick="borrarFavorito(${fi});event.stopPropagation();" style="background:rgba(0,0,0,0.08);border:none;border-radius:50%;width:16px;height:16px;font-size:9px;cursor:pointer;color:#78350f;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:3px;-webkit-tap-highlight-color:transparent;">✕</button>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+function usarFavorito(cid,fi){
+  if(!tratActivo)return;
+  const c=tratActivo.cubas.find(x=>x.id===cid);if(!c)return;
+  const fav=prodsFavoritos()[fi];if(!fav)return;
+  // Rellena el primer producto vacío de la cuba, o añade uno nuevo
+  let p=c.productos.find(x=>!x.nombre.trim());
+  if(!p){
+    prodCounter++;
+    p={id:'pp'+prodCounter,nombre:'',dosisHa:'',dosisUnidad:'L',cantidad:'',unidad:'L'};
+    c.productos.push(p);
+  }
+  p.nombre=fav.nombre;
+  p.dosisHa=fav.dosisHa||'';
+  p.dosisUnidad=fav.dosisUnidad||canonicaUnidad(fav.unidad||'L');
+  p.unidad=fav.unidad||'L';
+  guardarTratActivo();
+  renderTratForm();
+  toast('⭐ '+fav.nombre+' añadido');
+}
+function borrarFavorito(fi){
+  const favs=prodsFavoritos();
+  const fav=favs[fi];if(!fav)return;
+  // fi es índice en el array invertido; hay que localizar en el catálogo real
+  const idxReal=db.catalogo.findIndex(x=>x.nombre.toLowerCase()===fav.nombre.toLowerCase());
+  if(idxReal>=0){db.catalogo.splice(idxReal,1);guardarDB();renderTratForm();toast('✕ '+fav.nombre+' eliminado de favoritos');}
+}
+function adjuntarFoto(pid,input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    // Comprimir con canvas antes de guardar
+    const img=new Image();
+    img.onload=function(){
+      const canvas=document.createElement('canvas');
+      const MAX=800;
+      let w=img.width,h=img.height;
+      if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+      if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      const dataUrl=canvas.toDataURL('image/jpeg',0.75);
+      const p=parcelasActivas.find(x=>x.id===pid);
+      if(p){p.foto=dataUrl;guardarParcelasActivas();renderParcelasActivas();}
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+  input.value='';
+}
+function quitarFoto(pid){
+  const p=parcelasActivas.find(x=>x.id===pid);
+  if(p){p.foto=null;guardarParcelasActivas();renderParcelasActivas();}
+}
+function renderProdLinesCuba(c){
+  return (c.productos||[]).map((p,pi)=>{
+    const UNIT_LABELS={'ml':'ml','cL':'cL','L':'Litros','g':'g','kg':'Kilos'};
+    const unidOpts=['ml','cL','L','g','kg'].map(u=>`<option value="${u}"${p.unidad===u?' selected':''}>${UNIT_LABELS[u]||u}</option>`).join('');
+    const dosisUnid=p.dosisUnidad||canonicaUnidad(p.unidad);
+    const dosisUOpts=['ml','cL','L','g','kg'].map(u=>`<option value="${u}"${dosisUnid===u?' selected':''}>${u}</option>`).join('');
+    return `<div class="prod-line" id="pl-${c.id}-${p.id}">
+      <div class="prod-line-top">
+        <span class="prod-line-lbl">Producto ${pi+1}</span>
+        ${c.productos.length>1?`<button class="prod-line-del" onclick="quitarProductoCuba('${c.id}','${p.id}')">✕</button>`:''}
+      </div>
+      <div class="prod-line-nom">
+        <input type="text" placeholder="Nombre del producto..." value="${p.nombre}" autocomplete="off"
+          oninput="setProducto('${c.id}','${p.id}','nombre',this.value);mostrarProdSugg(this,'${c.id}','${p.id}')"
+          onblur="ocultarProdSugg('${c.id}','${p.id}')"/>
+      </div>
+      <div class="dosis-mini-row">
+        <span class="dosis-mini-lbl">💊 Dosis/ha:</span>
+        <input class="dosis-mini-inp" type="number" placeholder="0.00" step="0.01" inputmode="decimal" value="${p.dosisHa}"
+          oninput="setProducto('${c.id}','${p.id}','dosisHa',this.value)"/>
+        <select class="dosis-mini-usel" onchange="setProducto('${c.id}','${p.id}','dosisUnidad',this.value)">${dosisUOpts}</select>
+        <span class="dosis-mini-sep">/ha</span>
+      </div>
+      <div class="prod-cant-row">
+        <label style="font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;display:block;margin-bottom:4px;">Cantidad:</label>
+        <div class="prod-cant-inner">
+          <input class="prod-cant-input" type="number" placeholder="0.000" inputmode="decimal" step="0.001" value="${p.cantidad}"
+            oninput="setProducto('${c.id}','${p.id}','cantidad',this.value)"/>
+          <select class="prod-unit-sel" onchange="setProducto('${c.id}','${p.id}','unidad',this.value)">${unidOpts}</select>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function renderTratForm(){
+  const cont=document.getElementById('trat-form-container');if(!cont)return;
+  const btn=document.getElementById('btn-nuevo-trat');
+  if(!tratActivo){cont.innerHTML='';if(btn)btn.style.display='flex';return;}
+  if(btn)btn.style.display='none';
+  const fechaD=tratActivo.fecha?new Date(tratActivo.fecha+'T12:00:00'):new Date();
+  const diaSemana=DS[fechaD.getDay()];
+  const tots=calcTotalesPorProducto(tratActivo.cubas);
+  const totalesHTML=tots.length>0&&tots.some(t=>t.total>0)?
+    tots.map(t=>`<div class="tot-prod-row"><span class="tot-prod-nom">${t.nombre}</span><span class="tot-prod-val">${t.total}</span><span class="tot-prod-unit">${{L:'Litros',kg:'Kilos'}[t.unidad]||t.unidad}</span></div>`).join(''):
+    '<div style="color:rgba(255,255,255,0.5);font-size:13px;">Rellena cantidades...</div>';
+  const cubasHTML=tratActivo.cubas.map((c,ci)=>{
+    const tagsHTML=c.parcelas.map((p,i)=>{const nom=typeof p==='string'?p:p.nombre;const ha=sanitizeHa(typeof p==='object'?p.ha:'');return `<span class="ptag">${nom}${ha?' <span style="opacity:0.7;font-size:11px;">('+ha+'ha)</span>':''}<button class="ptag-x" onclick="removeParcelaCuba('${c.id}',${i})">✕</button></span>`;}).join('');
+    return `<div class="cuba-card" id="cuba-${c.id}">
+      <div class="cuba-header">
+        <span class="cuba-title">🛢 Cuba ${ci+1}</span>
+        ${tratActivo.cubas.length>1?`<button class="cuba-del-btn" onclick="quitarCuba('${c.id}')">✕ Quitar</button>`:''}
+      </div>
+      <div class="agua-row">
+        <div class="agua-box ell">
+          <label>💧 Agua llenado</label>
+          <input type="number" placeholder="0" inputmode="decimal" value="${c.litrosAgua}"
+            oninput="setCubaAgua('${c.id}','litrosAgua',this.value)"/>
+          <div class="agua-unit">litros</div>
+        </div>
+        <div class="agua-box real">
+          <label>✅ Agua real gastada</label>
+          <input type="number" placeholder="0" inputmode="decimal" value="${c.litrosReales}"
+            oninput="setCubaAgua('${c.id}','litrosReales',this.value)"/>
+          <div class="agua-unit">litros</div>
+        </div>
+        <div class="agua-box caldo">
+          <label>🌿 L/ha caldo</label>
+          <input type="number" placeholder="0" inputmode="decimal" value="${c.litrosCaldo||''}"
+            oninput="setCubaAgua('${c.id}','litrosCaldo',this.value)"/>
+          <div class="agua-unit">litros/ha</div>
+        </div>
+      </div>
+      <span class="trat-sect-lbl">🌿 Productos aplicados</span>
+      ${renderFavoritosCuba(c)}
+      ${renderProdLinesCuba(c)}
+      <button class="add-prod-line-btn" onclick="agregarProductoCuba('${c.id}')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Añadir otro producto
+      </button>
+      <span class="parc-label" style="margin-top:.75rem;">📍 Parcelas tratadas con esta cuba</span>
+      <div class="tags-wrap" id="tags-${c.id}">${tagsHTML}</div>
+      <div class="tag-row">
+        <input class="tag-inp" id="tag-inp-${c.id}" type="text" placeholder="Nombre finca..." autocomplete="off"
+          onkeydown="addParcelaCubaEnter('${c.id}',event)"
+          onblur="autocompletarHa('${c.id}')" />
+        <input class="ha-inp" id="ha-inp-${c.id}" type="text" inputmode="decimal" placeholder="ha" oninput="this.value=this.value.replace(',','.')" />
+        <button class="tag-add-btn" onclick="addParcelaCuba('${c.id}')">+</button>
+      </div>
+      <div class="ha-total" id="ha-total-${c.id}"></div>
+    </div>`;
+  }).join('');
+  cont.innerHTML=`<div class="trat-form-box">
+    <div class="trat-form-hdr">
+      <div>
+        <div class="trat-form-hdr-txt">🧪 Nuevo tratamiento</div>
+        <div class="trat-form-hdr-sub">Rellena los datos del tratamiento</div>
+      </div>
+      <button onclick="cancelarTrat()" style="background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.3);border-radius:8px;color:white;font-size:16px;padding:6px 10px;cursor:pointer;">✕</button>
+    </div>
+    <div class="trat-form-body">
+      <span class="trat-sect-lbl">📅 Fecha del tratamiento</span>
+      <div class="trat-fecha-row">
+        <div class="f" style="margin-bottom:0;">
+          <input type="date" value="${tratActivo.fecha}" onchange="setTratFecha(this.value)"
+            style="font-size:16px;font-weight:700;border:2px solid #fde68a;background:#fffbeb;color:#78350f;"/>
+        </div>
+        <div class="dia-badge" id="dia-badge">${diaSemana}</div>
+      </div>
+      <span class="trat-sect-lbl" style="margin-top:1rem;">🛢 Cubas / Sulfatadoras</span>
+      ${cubasHTML}
+      <button class="add-cuba-btn" onclick="agregarCuba()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        Añadir otra cuba
+      </button>
+      <div class="totales-box">
+        <div class="totales-tit">📊 Total productos gastados (este tratamiento)</div>
+        <div id="totales-live">${totalesHTML}</div>
+      </div>
+      <button class="trat-save-btn" onclick="guardarTratamiento()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+        Guardar tratamiento
+      </button>
+    </div>
+  </div>`;
+  // Actualizar totales de ha para cada cuba después de pintar el HTML
+  tratActivo.cubas.forEach(c=>actualizarHaTotal(c.id));
+}
+function cancelarTrat(){
+  pedirConfirm('🧪','¿Cancelar tratamiento?','Se perderán los datos no guardados.',function(){
+    tratActivo=null;cubCounter=0;prodCounter=0;
+    try{localStorage.removeItem('trat_activo_v2');localStorage.removeItem('trat_activo_v1');}catch(e){}
+    renderTratForm();
+    const btn=document.getElementById('btn-nuevo-trat');if(btn)btn.style.display='flex';
+  });
+}
+function guardarTratamiento(){
+  if(!tratActivo)return;
+  const errores=[];
+  if(!tratActivo.fecha)errores.push('• Selecciona la fecha del tratamiento.');
+  if(tratActivo.cubas.length===0)errores.push('• Añade al menos una cuba.');
+  const cubaSinProd=tratActivo.cubas.find(c=>(c.productos||[]).every(p=>!p.nombre.trim()));
+  if(cubaSinProd)errores.push('• Pon el nombre del producto en todas las cubas.');
+  if(errores.length>0){alert(errores.join('\n'));return;}
+  actualizarCatalogo(tratActivo.cubas);
+  const tots=calcTotalesPorProducto(tratActivo.cubas);
+  const fechaD=new Date(tratActivo.fecha+'T12:00:00');
+  db.tratamientos.push({
+    id:Date.now()+Math.random(),
+    campana:campanaActual,
+    fecha:tratActivo.fecha,
+    diaSemana:DS[fechaD.getDay()],
+    cubas:tratActivo.cubas.map(c=>({...c,productos:c.productos.map(p=>({...p}))})),
+    totalesPorProducto:tots
+  });
+  guardarDB();
+  tratActivo=null;cubCounter=0;prodCounter=0;
+  try{localStorage.removeItem('trat_activo_v2');localStorage.removeItem('trat_activo_v1');}catch(e){}
+  toast('🧪 Tratamiento guardado ✓');
+  renderTratForm();renderHistorialTrat();
+}
+function calcResumenCampana(){
+  const regs=db.tratamientos.filter(t=>t.campana===campanaActual);
+  const mapa={};
+  regs.forEach(t=>{
+    (t.totalesPorProducto||[]).forEach(tp=>{
+      const key=tp.nombre+'||'+tp.unidad;
+      if(!mapa[key])mapa[key]={nombre:tp.nombre,total:0,unidad:tp.unidad};
+      mapa[key].total+=tp.total;
+    });
+    // backwards compat with old format
+    if(!t.totalesPorProducto&&t.producto){
+      const base=t.totalUnidad||'L';
+      const key=t.producto+'||'+base;
+      if(!mapa[key])mapa[key]={nombre:t.producto,total:0,unidad:base};
+      mapa[key].total+=(t.totalCanonica||0);
+    }
+  });
+  return Object.values(mapa).map(x=>({...x,total:Math.round(x.total*1000)/1000}));
+}
+function renderHistorialTrat(){
+  const cont=document.getElementById('trat-hist-container');if(!cont)return;
+  const regs=db.tratamientos.filter(t=>t.campana===campanaActual).sort((a,b)=>b.fecha.localeCompare(a.fecha));
+  // Resumen campaña — ahora va AL FINAL
+  const resumen=calcResumenCampana();
+  const resumenHTML=resumen.length>0?`
+    <div class="camp-resumen" style="margin-top:1rem;">
+      <div class="camp-res-tit">🏆 Resumen campaña · ${db.campanas.find(c=>c.id===campanaActual)?.nombre||campanaActual}</div>
+      ${resumen.map(r=>`<div class="camp-res-row">
+        <span class="camp-res-prod">${r.nombre}</span>
+        <span><span class="camp-res-num">${r.total}</span><span class="camp-res-unit">${{L:"Litros",kg:"Kilos"}[r.unidad]||r.unidad}</span></span>
+      </div>`).join('')}
+    </div>`:'';
+  if(regs.length===0){
+    cont.innerHTML='<div class="empty"><div style="font-size:3rem;margin-bottom:.75rem;">🧪</div><div style="font-size:15px;font-weight:500;color:#9ca3af;">No hay tratamientos registrados.</div></div>'+resumenHTML;
+    return;
+  }
+  cont.innerHTML=regs.map((t,i)=>{
+    const fechaD=new Date(t.fecha+'T12:00:00');
+    const fechaStr=`${t.diaSemana||DS[fechaD.getDay()]} ${fechaD.getDate()} ${MS[fechaD.getMonth()]} ${fechaD.getFullYear()}`;
+    const todasParcelas=[...new Set((t.cubas||[]).flatMap(c=>(c.parcelas||[]).map(p=>typeof p==='string'?p:p.nombre)))];
+    // totales del tratamiento
+    const tots=t.totalesPorProducto||[];
+    const totsHTML=tots.map(tp=>`<div class="tot-prod-row" style="padding:4px 0;"><span class="tot-prod-nom">${tp.nombre}</span><span class="tot-prod-val" style="font-size:17px;">${tp.total}</span><span class="tot-prod-unit">${{L:'Litros',kg:'Kilos'}[tp.unidad]||tp.unidad}</span></div>`).join('');
+    const tituloPrincipal=fechaStr;
+    const cubasHTML=(t.cubas||[]).map((c,ci)=>{
+      const ULBL={'L':'Litros','kg':'Kilos','ml':'ml','cL':'cL','g':'g'};const prodsHTML=(c.productos||[]).map(p=>`<div style="font-size:12px;color:#78350f;font-weight:600;">🌿 ${p.nombre}${p.dosisHa?' ('+p.dosisHa+' '+(p.dosisUnidad||canonicaUnidad(p.unidad))+'/ha)':''}${p.cantidad?' — '+p.cantidad+' '+(ULBL[p.unidad]||p.unidad):''}</div>`).join('');
+      const aguaHTML=(c.litrosAgua||c.litrosReales)?`<div style="font-size:12px;color:#1d4ed8;font-weight:600;margin-top:3px;">💧 Llena: ${c.litrosAgua||'?'}L · Gastada: ${c.litrosReales||'?'}L</div>`:'';
+      return `<div class="cuba-det">
+        <div class="cuba-det-tit">🛢 Cuba ${ci+1}</div>
+        ${prodsHTML}${aguaHTML}
+        ${c.parcelas&&c.parcelas.length>0?`<div class="cuba-det-parc" style="margin-top:3px;">📍 ${(c.parcelas||[]).map(p=>typeof p==='string'?p:(p.nombre+(sanitizeHa(p.ha)?' ('+sanitizeHa(p.ha)+'ha)':''))).join(', ')}</div>`:''}
+      </div>`;
+    }).join('');
+    return `<div class="trat-group">
+      <div class="trat-ph" onclick="toggleParcela('tdet-${i}','tarr-${i}')">
+        <div class="trat-ph-icon">🧪</div>
+        <div style="flex:1;min-width:0;">
+          <div class="trat-ph-prod">${tituloPrincipal}</div>
+          <div class="trat-ph-sub">${tots.map(tp=>tp.nombre).join(', ')||t.producto||'Sin productos'}${todasParcelas.length>0?' · '+todasParcelas.slice(0,2).join(', ')+(todasParcelas.length>2?'...':''):''}</div>
+        </div>
+        <svg style="margin-left:8px;flex-shrink:0;transition:transform .2s;" id="tarr-${i}" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="trat-detail" id="tdet-${i}">
+        ${tots.length>0?`<div class="totales-box" style="margin-top:0;margin-bottom:.75rem;">${totsHTML}</div>`:''}
+        ${cubasHTML}
+        <button class="btn-edit-trat" onclick="toggleEditTrat('tedit-${i}',this)">✏️ Editar este tratamiento</button>
+        <div class="trat-edit-panel" id="tedit-${i}">
+          <div style="font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">✏️ Editar tratamiento</div>
+          <div style="margin-bottom:.65rem;">
+            <label style="font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:5px;">📅 Fecha</label>
+            <input type="date" id="tedit-${i}-fecha" value="${t.fecha}"
+              style="width:100%;border:2px solid #fde68a;border-radius:10px;padding:9px 12px;font-size:16px;font-weight:700;font-family:'DM Sans',sans-serif;background:#fffbeb;color:#78350f;outline:none;-webkit-appearance:none;"/>
+          </div>
+          ${(t.cubas||[]).map((c,ci)=>{
+            const ekey=JSON.stringify(t.id)+'_'+ci;
+            const parcsHTML=(c.parcelas||[]).map((p,pi)=>{
+              const nom=typeof p==='string'?p:(p.nombre||'');
+              const ha=sanitizeHa(typeof p==='object'?p.ha:'');
+              return `<span class="ptag" id="tedit-ptag-${i}-${ci}-${pi}" style="font-size:12px;">${nom}${ha?' <span style="opacity:0.7;font-size:10px;">(${ha}ha)</span>':''}<button class="ptag-x" onclick="editTratQuitarParc(${JSON.stringify(t.id)},${i},${ci},${pi})">✕</button></span>`;
+            }).join('');
+            return `
+          <div style="background:white;border:1.5px solid #fde68a;border-radius:10px;padding:.75rem;margin-bottom:.65rem;">
+            <div style="font-size:12px;font-weight:700;color:#78350f;margin-bottom:.5rem;">🛢 Cuba ${ci+1}</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:.5rem;">
+              <div style="text-align:center;">
+                <label style="font-size:9px;font-weight:700;color:#3b82f6;text-transform:uppercase;display:block;margin-bottom:2px;">💧 Agua llena</label>
+                <input type="number" id="tedit-${i}-c${ci}-agua" value="${c.litrosAgua||''}" placeholder="0" inputmode="decimal"
+                  style="width:100%;border:1.5px solid #bfdbfe;border-radius:7px;padding:5px 4px;font-size:15px;font-weight:700;font-family:'Fraunces',serif;text-align:center;background:#eff6ff;color:#1e3a8a;outline:none;-webkit-appearance:none;"/>
+                <div style="font-size:9px;color:#9ca3af;margin-top:1px;">litros</div>
+              </div>
+              <div style="text-align:center;">
+                <label style="font-size:9px;font-weight:700;color:#16a34a;text-transform:uppercase;display:block;margin-bottom:2px;">✅ Agua real</label>
+                <input type="number" id="tedit-${i}-c${ci}-real" value="${c.litrosReales||''}" placeholder="0" inputmode="decimal"
+                  style="width:100%;border:1.5px solid #bbf7d0;border-radius:7px;padding:5px 4px;font-size:15px;font-weight:700;font-family:'Fraunces',serif;text-align:center;background:#f0fdf4;color:#14532d;outline:none;-webkit-appearance:none;"/>
+                <div style="font-size:9px;color:#9ca3af;margin-top:1px;">litros</div>
+              </div>
+              <div style="text-align:center;">
+                <label style="font-size:9px;font-weight:700;color:#e11d48;text-transform:uppercase;display:block;margin-bottom:2px;">🌿 L/ha caldo</label>
+                <input type="number" id="tedit-${i}-c${ci}-caldo" value="${c.litrosCaldo||''}" placeholder="0" inputmode="decimal"
+                  style="width:100%;border:1.5px solid #fecdd3;border-radius:7px;padding:5px 4px;font-size:15px;font-weight:700;font-family:'Fraunces',serif;text-align:center;background:#fff1f2;color:#be123c;outline:none;-webkit-appearance:none;"/>
+                <div style="font-size:9px;color:#9ca3af;margin-top:1px;">L/ha</div>
+              </div>
+            </div>
+            ${(c.productos||[]).map((p,pi)=>`
+            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:.5rem;margin-bottom:.4rem;">
+              <div style="font-size:10px;font-weight:700;color:#b45309;margin-bottom:.4rem;">🌿 Producto ${pi+1}</div>
+              <label style="font-size:9px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:2px;">Nombre del producto</label>
+              <input type="text" id="tedit-${i}-c${ci}-p${pi}-nom" value="${p.nombre||''}" placeholder="Ej: Glifosato, Fungicida..."
+                style="width:100%;border:1.5px solid #fde68a;border-radius:7px;padding:6px 9px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;background:white;color:#111827;outline:none;margin-bottom:.4rem;"/>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
+                <div>
+                  <label style="font-size:9px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:2px;">Dosis / hectárea</label>
+                  <input type="number" id="tedit-${i}-c${ci}-p${pi}-dosis" value="${p.dosisHa||''}" placeholder="0.00" step="0.01" inputmode="decimal"
+                    style="width:100%;border:1.5px solid #fde68a;border-radius:7px;padding:5px 7px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;background:white;color:#78350f;outline:none;-webkit-appearance:none;"/>
+                </div>
+                <div>
+                  <label style="font-size:9px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:2px;">Cantidad usada</label>
+                  <input type="number" id="tedit-${i}-c${ci}-p${pi}-cant" value="${p.cantidad||''}" placeholder="0.000" step="0.001" inputmode="decimal"
+                    style="width:100%;border:1.5px solid #fde68a;border-radius:7px;padding:5px 7px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;background:white;color:#78350f;outline:none;-webkit-appearance:none;"/>
+                </div>
+              </div>
+            </div>`).join('')}
+            <div style="margin-top:.6rem;">
+              <label style="font-size:9px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:5px;">📍 Parcelas tratadas con esta cuba</label>
+              <div class="tags-wrap" id="tedit-tags-${i}-${ci}" style="min-height:8px;margin-bottom:6px;">${parcsHTML}</div>
+              <div style="display:grid;grid-template-columns:1fr 70px auto;gap:6px;">
+                <input class="tag-inp" id="tedit-parc-nom-${i}-${ci}" type="text" placeholder="Nombre finca..." autocomplete="off"
+                  onkeydown="if(event.key==='Enter'){event.preventDefault();editTratAddParc(${JSON.stringify(t.id)},${i},${ci});}"
+                  style="border:2px solid #bbf7d0;background:#f0fdf4;color:#14532d;border-radius:10px;padding:9px 10px;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:600;outline:none;"/>
+                <input class="ha-inp" id="tedit-parc-ha-${i}-${ci}" type="text" inputmode="decimal" placeholder="ha"
+                  oninput="this.value=this.value.replace(',','.')"
+                  style="border:2px solid #bbf7d0;background:#f0fdf4;color:#14532d;border-radius:10px;padding:9px 6px;font-size:14px;font-family:'Fraunces',serif;font-weight:700;text-align:center;outline:none;-webkit-appearance:none;"/>
+                <button class="tag-add-btn" style="border-color:#16a34a;background:linear-gradient(135deg,#dcfce7,#bbf7d0);color:#14532d;"
+                  onclick="editTratAddParc(${JSON.stringify(t.id)},${i},${ci})">+</button>
+              </div>
+              <div style="font-size:11px;font-weight:700;color:#16a34a;text-align:right;margin-top:4px;" id="tedit-hatot-${i}-${ci}"></div>
+            </div>
+          </div>`;
+          }).join('')}
+          <button onclick="guardarEdicionTrat(${JSON.stringify(t.id)},${i})"
+            style="width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(135deg,#78350f,#d97706);color:white;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:.25rem;">
+            💾 Guardar cambios
+          </button>
+        </div>
+        <button class="btn-del-trat" onclick="eliminarTratamiento(${JSON.stringify(t.id)})">🗑 Eliminar este tratamiento</button>
+      </div>
+    </div>`;
+  }).join('')+resumenHTML;
+}
+function eliminarTratamiento(id){
+  pedirConfirm('🗑','¿Eliminar tratamiento?','Esta acción no se puede deshacer.',function(){
+    db.tratamientos=db.tratamientos.filter(t=>t.id!==id);
+    guardarDB();renderHistorialTrat();
+  });
+}
+function toggleEditTrat(panelId,btn){
+  const panel=document.getElementById(panelId);if(!panel)return;
+  const open=panel.classList.contains('open');
+  panel.classList.toggle('open',!open);
+  if(btn)btn.textContent=open?'✏️ Editar este tratamiento':'✖ Cerrar edición';
+}
+// Renderiza los tags de parcelas en el panel de edición de tratamiento
+function _renderEditTratTags(tid,idx,ci){
+  const key=JSON.stringify(tid)+'_'+ci;
+  const wrap=document.getElementById('tedit-tags-'+idx+'-'+ci);
+  const t=db.tratamientos.find(x=>x.id===tid);
+  if(!wrap||!t||!t.cubas[ci])return;
+  const parcs=t.cubas[ci].parcelas||[];
+  wrap.innerHTML=parcs.map((p,pi)=>{
+    const nom=typeof p==='string'?p:(p.nombre||'');
+    const ha=sanitizeHa(typeof p==='object'?p.ha:'');
+    return `<span class="ptag" style="font-size:12px;">${nom}${ha?' <span style="opacity:0.7;font-size:10px;">(${ha}ha)</span>':''}<button class="ptag-x" onclick="editTratQuitarParc(${JSON.stringify(tid)},${idx},${ci},${pi})">✕</button></span>`;
+  }).join('');
+  // Actualizar total ha
+  const tot=parcs.reduce((s,p)=>{const h=parseFloat(sanitizeHa(typeof p==='object'?p.ha:''));return s+(isNaN(h)?0:h);},0);
+  const totEl=document.getElementById('tedit-hatot-'+idx+'-'+ci);
+  if(totEl)totEl.textContent=tot>0?'Total: '+Math.round(tot*100)/100+' ha tratadas':'';
+}
+function editTratAddParc(tid,idx,ci){
+  const nomInp=document.getElementById('tedit-parc-nom-'+idx+'-'+ci);
+  const haInp=document.getElementById('tedit-parc-ha-'+idx+'-'+ci);
+  if(!nomInp)return;
+  const nom=nomInp.value.trim();if(!nom)return;
+  const ha=haInp?haInp.value.trim():'';
+  const t=db.tratamientos.find(x=>x.id===tid);
+  if(!t||!t.cubas[ci])return;
+  if(!t.cubas[ci].parcelas)t.cubas[ci].parcelas=[];
+  const ya=t.cubas[ci].parcelas.find(p=>(typeof p==='string'?p:(p.nombre||'')).toLowerCase()===nom.toLowerCase());
+  if(!ya)t.cubas[ci].parcelas.push({nombre:nom,ha});
+  nomInp.value='';if(haInp)haInp.value='';
+  _renderEditTratTags(tid,idx,ci);
+}
+function editTratQuitarParc(tid,idx,ci,pi){
+  const t=db.tratamientos.find(x=>x.id===tid);
+  if(!t||!t.cubas[ci]||!t.cubas[ci].parcelas)return;
+  t.cubas[ci].parcelas.splice(pi,1);
+  _renderEditTratTags(tid,idx,ci);
+}
+function guardarEdicionTrat(tid,idx){
+  const t=db.tratamientos.find(x=>x.id===tid);if(!t)return;
+  // fecha
+  const fechaInp=document.getElementById('tedit-'+idx+'-fecha');
+  if(fechaInp&&fechaInp.value){
+    t.fecha=fechaInp.value;
+    const fd=new Date(t.fecha+'T12:00:00');
+    t.diaSemana=DS[fd.getDay()];
+  }
+  // cubas: agua, productos (parcelas ya se editan en tiempo real)
+  (t.cubas||[]).forEach((c,ci)=>{
+    const agua=document.getElementById('tedit-'+idx+'-c'+ci+'-agua');
+    const real=document.getElementById('tedit-'+idx+'-c'+ci+'-real');
+    const caldo=document.getElementById('tedit-'+idx+'-c'+ci+'-caldo');
+    if(agua)c.litrosAgua=agua.value;
+    if(real)c.litrosReales=real.value;
+    if(caldo)c.litrosCaldo=caldo.value;
+    (c.productos||[]).forEach((p,pi)=>{
+      const nom=document.getElementById('tedit-'+idx+'-c'+ci+'-p'+pi+'-nom');
+      const dosis=document.getElementById('tedit-'+idx+'-c'+ci+'-p'+pi+'-dosis');
+      const cant=document.getElementById('tedit-'+idx+'-c'+ci+'-p'+pi+'-cant');
+      if(nom)p.nombre=nom.value;
+      if(dosis)p.dosisHa=dosis.value;
+      if(cant)p.cantidad=cant.value;
+    });
+  });
+  // recalcular totales
+  t.totalesPorProducto=calcTotalesPorProducto(t.cubas);
+  actualizarCatalogo(t.cubas);
+  guardarDB();
+  toast('✅ Tratamiento corregido y guardado');
+  renderHistorialTrat();
+}
+function limpiarCatalogo(){
+  pedirConfirm('🗑','¿Borrar historial de productos?','Se eliminará la lista de productos usados recientemente (los chips ⭐ de favoritos). Los tratamientos guardados no se borran.',function(){
+    db.catalogo=[];
+    guardarDB();
+    toast('✅ Historial de productos eliminado');
+  });
+}
+function borrarDatosPrueba(){
+  pedirConfirm('🧹','¿Borrar todos los datos de prueba?',
+    'Se eliminarán TODOS los registros de riegos, tratamientos, parcelas, zonas y productos del historial. Las campañas se mantienen. Esta acción no se puede deshacer.',
+    function(){
+      db.registros=[];
+      db.tratamientos=[];
+      db.catalogo=[];
+      guardarDB();
+      actualizarStats();
+      try{localStorage.removeItem('riegos_activas');}catch(e){}
+      parcelasActivas=[];pCounter=0;
+      renderParcelasActivas();
+      toast('🧹 Datos de prueba eliminados — listo para empezar');
+    }
+  );
+}
+function exportarTratCSV(){
+  const campNombre=db.campanas.find(c=>c.id===campanaActual)?.nombre||campanaActual;
+  const regs=db.tratamientos.filter(t=>t.campana===campanaActual);
+  if(regs.length===0){toast('⚠️ No hay tratamientos en esta campaña');return;}
+  const rows=[['Campaña','Fecha','Día','Nº Cuba','Agua llenado (L)','Agua real (L)','Parcelas tratadas','Hectáreas tratadas','Nº Producto','Producto','Dosis/ha','Cantidad','Unidad','Total producto (L o kg)']];
+  regs.forEach(t=>{
+    (t.cubas||[]).forEach((c,ci)=>{
+      // Formatear parcelas correctamente (pueden ser strings u objetos {nombre,ha})
+      const parcelasNom=(c.parcelas||[]).map(p=>typeof p==='string'?p:(p.nombre||'')).filter(Boolean).join(' / ');
+      const parcelasHa=(c.parcelas||[]).map(p=>{
+        const ha=typeof p==='object'?sanitizeHa(p.ha):'';
+        const nom=typeof p==='string'?p:(p.nombre||'');
+        return ha?nom+' ('+ha+'ha)':nom;
+      }).filter(Boolean).join(' / ');
+      const totalHa=(c.parcelas||[]).reduce((sum,p)=>{
+        const ha=parseFloat(typeof p==='object'?sanitizeHa(p.ha):'');
+        return sum+(isNaN(ha)?0:ha);
+      },0);
+      (c.productos||[]).forEach((p,pi)=>{
+        const totProd=t.totalesPorProducto?.find(x=>x.nombre===p.nombre);
+        rows.push([campNombre,t.fecha,t.diaSemana||'',ci+1,c.litrosAgua||'',c.litrosReales||'',
+          parcelasNom,totalHa>0?totalHa.toFixed(2):'',
+          pi+1,p.nombre,p.dosisHa||'',p.cantidad||'',p.unidad||'',
+          pi===0&&totProd?totProd.total:'']);
+      });
+      if((c.productos||[]).length===0){
+        rows.push([campNombre,t.fecha,t.diaSemana||'',ci+1,c.litrosAgua||'',c.litrosReales||'',
+          parcelasNom,totalHa>0?totalHa.toFixed(2):'','','','','','','']);
+      }
+    });
+  });
+  const resumen=calcResumenCampana();
+  rows.push([]);rows.push(['RESUMEN CAMPAÑA','','','','','','','','Producto','','Total','Unidad','']);
+  resumen.forEach(r=>rows.push(['','','','','','','','',r.nombre,'',r.total,r.unidad,'']));
+  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='tratamientos_'+campNombre.replace(/\s/g,'_')+'.csv';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  toast('📊 CSV de tratamientos descargado');
+}
+// ===== EXPORTAR =====
+function exportarCSV(){
+  const campNombre=db.campanas.find(c=>c.id===campanaActual)?.nombre||campanaActual;
+  const regs=db.registros.filter(r=>r.campana===campanaActual);
+  if(regs.length===0){toast('⚠️ No hay registros en esta campaña');return;}
+  const rows=[['Campaña','Parcela','Zona','Cultivo','Hectáreas','Nº Riego','Fecha Inicio','Hora Inicio','Hora Fin','Duración','m³ Inicio','m³ Final','Consumo m³','L/m²','Incidencias']];
+  regs.forEach(reg=>{
+    if(reg.riegos)reg.riegos.forEach((r,i)=>{
+      const ini=r.inicioTS?new Date(r.inicioTS):null;
+      const fin=r.finTS?new Date(r.finTS):null;
+      const ha=parseFloat(reg.hectareas)||0;
+      const m3=parseFloat(r.consumo);
+      const lm2=(!isNaN(m3)&&ha>0)?(m3*1000/(ha*10000)).toFixed(2):'';
+      rows.push([
+        campNombre,
+        reg.nombre,
+        reg.zona||'',
+        reg.cultivo||'',
+        reg.hectareas||'',
+        i+1,
+        ini?`${ini.getDate()}/${ini.getMonth()+1}/${ini.getFullYear()}`:'',
+        ini?fmtHora(ini):'',
+        fin?fmtHora(fin):'',
+        r.duracion&&r.duracion!=='—'?r.duracion:'',
+        r.m3ini||'',
+        r.m3fin||'',
+        r.consumo&&r.consumo!=='—'?r.consumo:'',
+        lm2,
+        r.incidencias||''
+      ]);
+    });
+  });
+  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='riegos_'+campNombre.replace(/\s/g,'_')+'.csv';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('📊 CSV descargado — ábrelo con Numbers o Excel');
+}
+function abrirSigpac(e,nombreParcela){
+  // El enlace ya abre la web. En iPhone se abre en Safari automáticamente con target="_blank".
+  // No existe app nativa de SIGPAC con URL scheme, así que la web es la única vía.
+  // Si el usuario tiene el visor ya abierto en Safari, se reutiliza la pestaña.
+}
+function exportarJSON(){
+  const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='riegos_backup_'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('💾 Copia guardada — búscala en Archivos → Descargas');
+}
+function restaurarJSON(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      const datos=JSON.parse(e.target.result);
+      if(!datos.campanas||!datos.registros){toast('⚠️ Archivo no válido');return;}
+      pedirConfirm('🔄','¿Restaurar copia de seguridad?','Se reemplazarán TODOS los datos actuales con los del archivo. Esta acción no se puede deshacer.',function(){
+        db=datos;
+        if(!db.tratamientos)db.tratamientos=[];
+        if(!db.catalogo)db.catalogo=[];
+        guardarDB();
+        campanaActual=db.campanas[db.campanas.length-1].id;
+        initCampanas();
+        actualizarStats();
+        toast('✅ Datos restaurados correctamente');
+      });
+    }catch(err){toast('⚠️ Error al leer el archivo');}
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+function exportarTextoTrat(){
+  const campNombre=db.campanas.find(c=>c.id===campanaActual)?.nombre||campanaActual;
+  const regs=db.tratamientos.filter(t=>t.campana===campanaActual).sort((a,b)=>b.fecha.localeCompare(a.fecha));
+  if(regs.length===0){toast('⚠️ No hay tratamientos en esta campaña');return;}
+  let txt=`🧪 TRATAMIENTOS — ${campNombre}\n${'─'.repeat(40)}\n\n`;
+  regs.forEach(t=>{
+    const fechaD=new Date(t.fecha+'T12:00:00');
+    txt+=`📅 ${t.diaSemana||DS[fechaD.getDay()]} ${fechaD.getDate()} ${MS[fechaD.getMonth()]} ${fechaD.getFullYear()}\n`;
+    (t.cubas||[]).forEach((c,ci)=>{
+      txt+=`  🛢 Cuba ${ci+1}`;
+      if(c.litrosAgua||c.litrosReales||c.litrosCaldo)txt+=` · Agua: ${c.litrosAgua||'?'}L llena / ${c.litrosReales||'?'}L gastada${c.litrosCaldo?' / '+c.litrosCaldo+'L·ha⁻¹':''}`;
+      txt+='\n';
+      (c.productos||[]).forEach(p=>{
+        if(!p.nombre)return;
+        txt+=`    🌿 ${p.nombre}`;
+        if(p.dosisHa)txt+=` — Dosis: ${p.dosisHa} ${p.dosisUnidad||'L'}/ha`;
+        if(p.cantidad)txt+=` — Cantidad: ${p.cantidad} ${p.unidad||'L'}`;
+        txt+='\n';
+      });
+      if(c.parcelas&&c.parcelas.length>0){
+        const parc=c.parcelas.map(p=>typeof p==='string'?p:(p.nombre+(p.ha?' ('+p.ha+'ha)':''))).join(', ');
+        txt+=`    📍 Parcelas: ${parc}\n`;
+      }
+    });
+    if(t.totalesPorProducto&&t.totalesPorProducto.length>0){
+      txt+=`  📊 Total: `+t.totalesPorProducto.map(tp=>`${tp.nombre}: ${tp.total} ${tp.unidad}`).join(' · ')+'\n';
+    }
+    txt+='\n';
+  });
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(txt).then(()=>toast('📋 Texto de tratamientos copiado')).catch(()=>_fallbackCopy(txt));
+  }else{_fallbackCopy(txt);}
+}
+function exportarTexto(){
+  const campNombre=db.campanas.find(c=>c.id===campanaActual)?.nombre||campanaActual;
+  const regs=db.registros.filter(r=>r.campana===campanaActual);
+  if(regs.length===0){toast('⚠️ No hay registros en esta campaña');return;}
+  const mapa={};
+  regs.forEach(reg=>{
+    const key=reg.nombre.trim().toLowerCase();
+    if(!mapa[key]){mapa[key]={nombre:reg.nombre,cultivo:reg.cultivo,riegos:[]};}
+    if(reg.riegos)reg.riegos.forEach(r=>mapa[key].riegos.push(r));
+  });
+  let txt=`📋 RIEGOS — ${campNombre}\n${'─'.repeat(40)}\n\n`;
+  Object.values(mapa).forEach(p=>{
+    txt+=`🌱 ${p.nombre.toUpperCase()} (${p.cultivo||'Sin cultivo'})\n`;
+    p.riegos.forEach((r,i)=>{
+      const ini=r.inicioTS?new Date(r.inicioTS):null;
+      txt+=`  Riego ${i+1}: ${ini?fmtLarga(ini)+' '+fmtHora(ini):'Sin fecha'}`;
+      if(r.consumo&&r.consumo!=='—')txt+=` · ${r.consumo} m³`;
+      if(r.duracion&&r.duracion!=='—')txt+=` · ${r.duracion}`;
+      if(r.incidencias)txt+=`\n    ⚠️ ${r.incidencias}`;
+      txt+='\n';
+    });
+    txt+='\n';
+  });
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(txt).then(()=>toast('📋 Texto copiado al portapapeles')).catch(()=>_fallbackCopy(txt));
+  }else{_fallbackCopy(txt);}
+}
+function _fallbackCopy(txt){
+  const ta=document.createElement('textarea');
+  ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');toast('📋 Texto copiado al portapapeles');}catch(e){toast('No se pudo copiar');}
+  document.body.removeChild(ta);
+}
+function compartir(){
+  const campNombre=db.campanas.find(c=>c.id===campanaActual)?.nombre||campanaActual;
+  const regs=db.registros.filter(r=>r.campana===campanaActual);
+  let total=0,totalM3=0;
+  regs.forEach(reg=>{if(reg.riegos)reg.riegos.forEach(r=>{total++;const c=parseFloat(r.consumo);if(!isNaN(c))totalM3+=c;});});
+  const txt=`💧 Riegos ${campNombre}: ${total} riegos · ${Math.round(totalM3)} m³ consumidos`;
+  if(navigator.share){
+    navigator.share({title:'Mis Riegos',text:txt}).catch(()=>{});
+  }else if(navigator.clipboard){
+    navigator.clipboard.writeText(txt).then(()=>toast('🔗 Resumen copiado'));
+  }
+}
+async function compartirArchivo(){
+  const nombre='riegos_backup_'+new Date().toISOString().slice(0,10)+'.json';
+  const contenido=JSON.stringify(db,null,2);
+  const file=new File([contenido],nombre,{type:'application/json'});
+  // Intentar Web Share API con archivo (funciona en iPhone Safari iOS 15+)
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+    try{
+      await navigator.share({
+        title:'Mis Riegos y Tratamientos — Copia de seguridad',
+        text:'Archivo de copia de seguridad con todos tus riegos y tratamientos.',
+        files:[file]
+      });
+      toast('✅ Archivo compartido correctamente');
+    }catch(e){
+      if(e.name!=='AbortError')exportarJSON();// fallback si falla por otro motivo
+    }
+  } else {
+    // Fallback: descarga directa
+    exportarJSON();
+    toast('☁️ Descargado — ábrelo en Archivos y muévelo a iCloud Drive');
+  }
+}
+// Arrancar
+cargarTratActivo();
+if(!cargarParcelasActivas()){
+  agregarParcela();
+  agregarRiego(parcelasActivas[0].id);
+}else{
+  renderParcelasActivas();
+}
+// ===== SERVICE WORKER =====
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
