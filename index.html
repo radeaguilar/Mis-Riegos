@@ -288,9 +288,9 @@ h1{font-family:'Fraunces',serif;font-size:26px;color:white;font-weight:700;line-
 .ph-sub{font-size:14px;color:var(--txt3);font-weight:500;}
 .ph-counters{margin-left:auto;display:flex;gap:14px;flex-shrink:0;}
 .pctr{text-align:center;}
-.pctr-num{font-family:'Fraunces',serif;font-size:22px;font-weight:700;line-height:1;}
+.pctr-num{font-family:'Fraunces',serif;font-size:26px;font-weight:700;line-height:1;}
 .pctr-g{color:#16a34a;}.pctr-b{color:#2563eb;}.pctr-p{color:#7c3aed;}
-.pctr-lbl{font-size:12px;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em;}
+.pctr-lbl{font-size:13px;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em;}
 .parcela-riegos{border-top:2px solid var(--brd);display:none;}
 .ri-h{padding:1rem 1.1rem;border-bottom:1.5px solid var(--brd);}
 .ri-h:last-child{border-bottom:none;}
@@ -450,14 +450,14 @@ h1{font-family:'Fraunces',serif;font-size:26px;color:white;font-weight:700;line-
 .camp-res-unit{font-size:12px;color:#92400e;font-weight:600;margin-left:3px;}
 /* RESUMEN POR ZONAS */
 .resumen-zonas-box{background:var(--card);border:2px solid #bbf7d0;border-radius:16px;padding:1rem;margin-bottom:1rem;}
-.resumen-zonas-tit{font-size:14px;font-weight:700;color:#14532d;margin-bottom:.75rem;display:flex;align-items:center;gap:6px;}
-.rz-zona-hdr{background:linear-gradient(135deg,#14532d,#16a34a);border-radius:10px;padding:8px 12px;margin-bottom:4px;margin-top:.5rem;display:flex;align-items:center;justify-content:space-between;}
-.rz-zona-nombre{font-size:14px;font-weight:700;color:white;}
-.rz-zona-tot{font-size:13px;color:#bbf7d0;font-weight:600;}
-.rz-cult-row{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;border-bottom:1px solid var(--brd);}
+.resumen-zonas-tit{font-size:16px;font-weight:700;color:#14532d;margin-bottom:.75rem;display:flex;align-items:center;gap:6px;}
+.rz-zona-hdr{background:linear-gradient(135deg,#14532d,#16a34a);border-radius:10px;padding:10px 14px;margin-bottom:4px;margin-top:.5rem;display:flex;align-items:center;justify-content:space-between;}
+.rz-zona-nombre{font-size:16px;font-weight:700;color:white;}
+.rz-zona-tot{font-size:14px;color:#bbf7d0;font-weight:600;}
+.rz-cult-row{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-bottom:1px solid var(--brd);}
 .rz-cult-row:last-child{border-bottom:none;}
-.rz-cult-nombre{font-size:14px;font-weight:700;color:var(--txt);}
-.rz-cult-datos{font-size:13px;color:#16a34a;font-weight:600;text-align:right;}
+.rz-cult-nombre{font-size:15px;font-weight:700;color:var(--txt);}
+.rz-cult-datos{font-size:14px;color:#16a34a;font-weight:700;text-align:right;}
 </style>
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -488,17 +488,30 @@ h1{font-family:'Fraunces',serif;font-size:26px;color:white;font-weight:700;line-
   </svg>
   <div class="hdr-top">
     <div class="hdr-logo">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M12 3 Q14 9 12 16 Q10 9 12 3Z" fill="#bbf7d0"/>
-        <path d="M7 7 Q11 11 12 16 Q9 11 7 7Z" fill="#bbf7d0"/>
-        <path d="M17 7 Q13 11 12 16 Q15 11 17 7Z" fill="#bbf7d0"/>
-        <ellipse cx="12" cy="20.5" rx="5.5" ry="3.5" fill="#d97706"/>
+      <!-- Aspersor de riego -->
+      <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Base del aspersor -->
+        <rect x="18" y="30" width="8" height="10" rx="2" fill="#bbf7d0"/>
+        <rect x="15" y="38" width="14" height="4" rx="2" fill="#86efac"/>
+        <!-- Brazo del aspersor -->
+        <rect x="20" y="20" width="4" height="12" rx="2" fill="#bbf7d0"/>
+        <!-- Cabezal giratorio -->
+        <ellipse cx="22" cy="19" rx="7" ry="4" fill="#4ade80"/>
+        <!-- Gotas de agua saliendo -->
+        <ellipse cx="10" cy="9" rx="2" ry="3" fill="#93c5fd" transform="rotate(-20 10 9)"/>
+        <ellipse cx="16" cy="6" rx="2" ry="3" fill="#60a5fa" transform="rotate(-5 16 6)"/>
+        <ellipse cx="22" cy="5" rx="2" ry="3.5" fill="#3b82f6"/>
+        <ellipse cx="28" cy="6" rx="2" ry="3" fill="#60a5fa" transform="rotate(5 28 6)"/>
+        <ellipse cx="34" cy="9" rx="2" ry="3" fill="#93c5fd" transform="rotate(20 34 9)"/>
+        <!-- Arco de agua -->
+        <path d="M10 13 Q22 3 34 13" stroke="#bfdbfe" stroke-width="1.5" fill="none" stroke-dasharray="2,2"/>
       </svg>
     </div>
     <div style="flex:1;"><h1>Mis Riegos y<br>Tratamientos</h1><p class="hdr-sub" id="fecha-header"></p></div>
-    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;">
+    <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
       <button id="dark-btn" onclick="toggleDark()" style="background:rgba(255,255,255,0.18);border:1.5px solid rgba(255,255,255,0.3);border-radius:12px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;" title="Modo oscuro">🌙</button>
-      <div id="sync-badge" onclick="mostrarPanelSync()" style="cursor:pointer;background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.25);border-radius:10px;padding:3px 8px;font-size:11px;font-weight:700;color:rgba(255,255,255,0.7);white-space:nowrap;">☁️ Sin sync</div>
+      <button id="zoom-btn" onclick="toggleZoom()" style="background:rgba(255,255,255,0.18);border:1.5px solid rgba(255,255,255,0.3);border-radius:12px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;" title="Bloquear zoom">🔍</button>
+      <div id="sync-badge" onclick="mostrarPanelSync()" style="cursor:pointer;background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.25);border-radius:10px;padding:3px 6px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.8);white-space:nowrap;text-align:center;">☁️<br>sync</div>
     </div>
   </div>
 
@@ -565,23 +578,6 @@ h1{font-family:'Fraunces',serif;font-size:26px;color:white;font-weight:700;line-
   </div>
 </div>
 <!-- MODAL CONFIRMACIÓN -->
-<!-- PANEL SYNC -->
-<div id="sync-panel" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;padding:20px;">
-  <div style="background:white;border-radius:20px;padding:1.5rem;width:100%;max-width:360px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-    <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:#14532d;margin-bottom:.3rem;">☁️ Sincronización en la nube</div>
-    <div style="font-size:14px;color:#6b7280;margin-bottom:1.2rem;line-height:1.5;">Introduce un código familiar para compartir datos entre dispositivos. El mismo código en el iPhone y en el ordenador sincroniza todo automáticamente.</div>
-    <label style="font-size:13px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px;">Código familiar</label>
-    <input id="sync-code-inp" type="text" placeholder="ej: garcia2025" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-      style="width:100%;border:2px solid #bbf7d0;border-radius:12px;padding:12px 14px;font-size:17px;font-weight:700;font-family:'DM Sans',sans-serif;color:#14532d;background:#f0fdf4;outline:none;margin-bottom:.5rem;"/>
-    <div style="font-size:12px;color:#9ca3af;margin-bottom:1.2rem;">⚠️ Cualquiera que conozca este código puede ver y modificar los datos. Elige algo que solo conozcáis vosotros.</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-      <button onclick="cerrarPanelSync()" style="padding:12px;border-radius:12px;border:2px solid #e5e7eb;background:white;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;color:#6b7280;cursor:pointer;">Cancelar</button>
-      <button onclick="activarSync()" style="padding:12px;border-radius:12px;border:none;background:linear-gradient(135deg,#14532d,#16a34a);font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;color:white;cursor:pointer;">Conectar</button>
-    </div>
-    <button id="sync-desconectar-btn" onclick="desconectarSync()" style="display:none;width:100%;margin-top:.6rem;padding:10px;border-radius:12px;border:2px solid #fecaca;background:#fff5f5;font-size:14px;font-weight:700;font-family:'DM Sans',sans-serif;color:#dc2626;cursor:pointer;">Desconectar</button>
-    <div id="sync-estado" style="margin-top:.8rem;font-size:13px;font-weight:600;text-align:center;min-height:20px;color:#16a34a;"></div>
-  </div>
-</div>
 <div class="confirm-bg" id="confirm-modal" style="display:none;">
   <div class="confirm-box">
     <div class="confirm-ico" id="confirm-ico">🗑</div>
@@ -674,6 +670,32 @@ function fmtCorta(d){return DS[d.getDay()].substring(0,3)+' '+d.getDate()+'/'+pa
 function fmtLarga(d){return DS[d.getDay()]+' '+d.getDate()+' '+MS[d.getMonth()]+' '+d.getFullYear();}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
 // ===== MODO OSCURO =====
+let zoomBloqueado=false;
+function toggleZoom(){
+  zoomBloqueado=!zoomBloqueado;
+  const btn=document.getElementById('zoom-btn');
+  if(zoomBloqueado){
+    // Bloquear zoom: deshabilitar gestos de pinch en todo el body
+    document.body.style.touchAction='pan-x pan-y';
+    document.documentElement.style.touchAction='pan-x pan-y';
+    if(btn){btn.textContent='🔒';btn.style.background='rgba(239,68,68,0.35)';btn.title='Desbloquear zoom';}
+    toast('🔒 Zoom bloqueado');
+  } else {
+    document.body.style.touchAction='';
+    document.documentElement.style.touchAction='';
+    if(btn){btn.textContent='🔍';btn.style.background='rgba(255,255,255,0.18)';btn.title='Bloquear zoom';}
+    toast('🔍 Zoom libre');
+  }
+  try{localStorage.setItem('riegos_zoom_bloq',zoomBloqueado?'1':'0');}catch(e){}
+}
+// Restaurar estado del zoom al cargar
+(function(){
+  const saved=localStorage.getItem('riegos_zoom_bloq');
+  if(saved==='1'){
+    zoomBloqueado=false;
+    toggleZoom();
+  }
+})();
 function toggleDark(){
   const isDark=document.body.classList.toggle('dark');
   const btn=document.getElementById('dark-btn');
@@ -781,7 +803,7 @@ function renderResumenRiegosPorZonas(container,regsParam){
       const lm2=(d.m3>0&&d.ha>0)?(d.m3*1000/(d.ha*10000)).toFixed(2):'—';
       html+=`<div class="rz-cult-row">
         <span class="rz-cult-nombre">${CULTIVO_EMOJI[cult]||'🌿'} ${cult}</span>
-        <span class="rz-cult-datos">${d.riegos}💧 ${d.m3>0?Math.round(d.m3)+' m³':''} ${d.ha>0?'· '+Math.round(d.ha*100)/100+' ha':''}${lm2!=='—'?' · <b>'+lm2+' L/m²</b>':''}</span>
+        <span class="rz-cult-datos">${d.riegos}💧 ${d.m3>0?Math.round(d.m3)+' m³':''}${lm2!=='—'?' · <b>'+lm2+' L/m²</b>':''}</span>
       </div>`;
     });
   });
@@ -2487,6 +2509,10 @@ if(!cargarParcelasActivas()){
 }else{
   renderParcelasActivas();
 }
+// ===== SERVICE WORKER =====
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
 // ===== FIREBASE SYNC =====
 const FB_CONFIG={
   apiKey:"AIzaSyDBVkIpcnyEiFkmKrFv-zmExv8lUEkZYCA",
@@ -2496,26 +2522,19 @@ const FB_CONFIG={
   messagingSenderId:"190205649699",
   appId:"1:190205649699:web:1a06184b12a2dfbf2c2296"
 };
-let fbApp=null,fbDB=null,fbUnsub=null,codigoFamiliar=null,_syncPending=false;
-
+let fbApp=null,fbDB=null,fbUnsub=null,codigoFamiliar=null;
 function initFirebase(){
   try{
     fbApp=firebase.initializeApp(FB_CONFIG);
     fbDB=firebase.firestore();
-    // Intentar reconectar con código guardado
     const saved=localStorage.getItem('riegos_sync_code');
-    if(saved){
-      codigoFamiliar=saved;
-      suscribirFirestore();
-    }
+    if(saved){codigoFamiliar=saved;suscribirFirestore();}
   }catch(e){console.warn('Firebase init error',e);}
 }
-
 function setSyncBadge(txt,color){
   const b=document.getElementById('sync-badge');
-  if(b){b.textContent=txt;b.style.background=color||'rgba(255,255,255,0.15)';}
+  if(b){b.innerHTML=txt;b.style.background=color||'rgba(255,255,255,0.15)';}
 }
-
 function mostrarPanelSync(){
   const panel=document.getElementById('sync-panel');
   panel.style.display='flex';
@@ -2525,25 +2544,19 @@ function mostrarPanelSync(){
   if(desBtn)desBtn.style.display=codigoFamiliar?'block':'none';
   document.getElementById('sync-estado').textContent='';
 }
-
-function cerrarPanelSync(){
-  document.getElementById('sync-panel').style.display='none';
-}
-
+function cerrarPanelSync(){document.getElementById('sync-panel').style.display='none';}
 function activarSync(){
   const inp=document.getElementById('sync-code-inp');
   const codigo=(inp.value||'').trim().toLowerCase().replace(/\s+/g,'');
   if(!codigo||codigo.length<4){
-    document.getElementById('sync-estado').textContent='⚠️ El código debe tener al menos 4 caracteres.';
-    document.getElementById('sync-estado').style.color='#dc2626';
-    return;
+    document.getElementById('sync-estado').textContent='⚠️ Mínimo 4 caracteres.';
+    document.getElementById('sync-estado').style.color='#dc2626';return;
   }
   document.getElementById('sync-estado').textContent='Conectando...';
   document.getElementById('sync-estado').style.color='#6b7280';
   if(fbUnsub)fbUnsub();
   codigoFamiliar=codigo;
   localStorage.setItem('riegos_sync_code',codigo);
-  // Subir datos locales primero, luego suscribir
   subirDatosLocales(function(){
     suscribirFirestore();
     document.getElementById('sync-estado').textContent='✅ Sincronización activada';
@@ -2553,93 +2566,103 @@ function activarSync(){
     setTimeout(cerrarPanelSync,1500);
   });
 }
-
 function desconectarSync(){
   if(fbUnsub){fbUnsub();fbUnsub=null;}
   codigoFamiliar=null;
   localStorage.removeItem('riegos_sync_code');
-  setSyncBadge('☁️ Sin sync');
+  setSyncBadge('☁️<br>sync');
   toast('Sincronización desactivada');
   cerrarPanelSync();
 }
-
 function subirDatosLocales(cb){
   if(!fbDB||!codigoFamiliar)return;
-  // Excluir fotos para no superar límite de Firestore (1MB por doc)
   const dbSinFotos=JSON.parse(JSON.stringify(db));
   (dbSinFotos.registros||[]).forEach(r=>{if(r.foto)r.foto=null;});
   fbDB.collection('riegos').doc(codigoFamiliar).set({
-    data:JSON.stringify(dbSinFotos),
-    ts:Date.now()
-  }).then(()=>{if(cb)cb();}).catch(e=>{
-    console.warn('Error subiendo datos',e);
-    if(cb)cb();
-  });
+    data:JSON.stringify(dbSinFotos),ts:Date.now()
+  }).then(()=>{if(cb)cb();}).catch(e=>{console.warn('Error subiendo',e);if(cb)cb();});
 }
-
 function suscribirFirestore(){
   if(!fbDB||!codigoFamiliar)return;
-  setSyncBadge('🔄 Sync...','rgba(251,191,36,0.3)');
+  setSyncBadge('🔄','rgba(251,191,36,0.3)');
   fbUnsub=fbDB.collection('riegos').doc(codigoFamiliar).onSnapshot(snap=>{
     if(!snap.exists){
-      // Primer uso con este código — subir datos locales
       subirDatosLocales(null);
-      setSyncBadge('☁️ '+codigoFamiliar,'rgba(74,222,128,0.2)');
+      setSyncBadge('☁️<br>'+codigoFamiliar.slice(0,6),'rgba(74,222,128,0.2)');
       return;
     }
     const remoto=snap.data();
     const tsRemoto=remoto.ts||0;
     const tsLocal=parseInt(localStorage.getItem('riegos_ts')||'0');
     if(tsRemoto>tsLocal){
-      // La nube tiene datos más recientes — descargar
       try{
         const dbRemoto=JSON.parse(remoto.data);
-        // Preservar fotos locales que no se suben a la nube
+        // FUSIONAR: no perder datos locales al conectar nuevo dispositivo
         const fotosLocales={};
         (db.registros||[]).forEach(r=>{if(r.foto)fotosLocales[r.id]=r.foto;});
-        db=dbRemoto;
-        if(!db.campanas)db.campanas=[{id:'2026',nombre:'Campaña 2026'}];
-        if(!db.registros)db.registros=[];
-        if(!db.tratamientos)db.tratamientos=[];
-        if(!db.catalogo)db.catalogo=[];
+        // Riegos: remoto + locales que no estén en remoto
+        const idsRemoto=new Set((dbRemoto.registros||[]).map(r=>String(r.id)));
+        const soloLocales=(db.registros||[]).filter(r=>!idsRemoto.has(String(r.id)));
+        dbRemoto.registros=[...(dbRemoto.registros||[]),...soloLocales];
+        // Tratamientos igual
+        const idsTratR=new Set((dbRemoto.tratamientos||[]).map(t=>String(t.id)));
+        const soloTratL=(db.tratamientos||[]).filter(t=>!idsTratR.has(String(t.id)));
+        dbRemoto.tratamientos=[...(dbRemoto.tratamientos||[]),...soloTratL];
+        // Catálogo
+        const nomsCatR=new Set((dbRemoto.catalogo||[]).map(c=>c.nombre));
+        const soloLocalCat=(db.catalogo||[]).filter(c=>!nomsCatR.has(c.nombre));
+        dbRemoto.catalogo=[...(dbRemoto.catalogo||[]),...soloLocalCat];
+        // Campañas: unir
+        const idsCampR=new Set((dbRemoto.campanas||[]).map(c=>c.id));
+        const soloLocalCamp=(db.campanas||[]).filter(c=>!idsCampR.has(c.id));
+        dbRemoto.campanas=[...(dbRemoto.campanas||[]),...soloLocalCamp];
+        if(!dbRemoto.campanas||dbRemoto.campanas.length===0)dbRemoto.campanas=[{id:'2026',nombre:'Campaña 2026'}];
         // Restaurar fotos locales
-        db.registros.forEach(r=>{if(fotosLocales[r.id])r.foto=fotosLocales[r.id];});
+        dbRemoto.registros.forEach(r=>{if(fotosLocales[r.id])r.foto=fotosLocales[r.id];});
+        db=dbRemoto;
         localStorage.setItem('riegos_db5',JSON.stringify(db));
         localStorage.setItem('riegos_ts',String(tsRemoto));
         campanaActual=db.campanas[db.campanas.length-1].id;
-        initCampanas();
-        actualizarStats();
-        toast('☁️ Datos sincronizados desde la nube');
-      }catch(e){console.warn('Error parseando datos remotos',e);}
+        initCampanas();actualizarStats();
+        // Subir versión fusionada para que la nube también tenga todo
+        subirDatosLocales(null);
+        toast('☁️ Datos sincronizados y fusionados');
+      }catch(e){console.warn('Error sync',e);}
     }
-    setSyncBadge('☁️ '+codigoFamiliar,'rgba(74,222,128,0.2)');
+    setSyncBadge('☁️<br>'+codigoFamiliar.slice(0,6),'rgba(74,222,128,0.2)');
   },err=>{
     console.warn('Firestore error',err);
-    setSyncBadge('⚠️ Sin conexión','rgba(239,68,68,0.2)');
+    setSyncBadge('⚠️','rgba(239,68,68,0.2)');
   });
 }
-
-// Sobreescribir guardarDB para incluir subida a Firestore
-const _guardarDBOriginal=guardarDB;
+// Sobreescribir guardarDB para subir a Firebase
+const _guardarDBOrig=guardarDB;
 guardarDB=function(){
-  _guardarDBOriginal();
+  _guardarDBOrig();
   localStorage.setItem('riegos_ts',String(Date.now()));
   if(fbDB&&codigoFamiliar){
-    _syncPending=true;
     clearTimeout(guardarDB._t);
-    guardarDB._t=setTimeout(()=>{
-      subirDatosLocales(()=>{_syncPending=false;});
-    },1500);// debounce 1.5s para no saturar con cada pulsación
+    guardarDB._t=setTimeout(()=>subirDatosLocales(null),1500);
   }
 };
-
-// Init
 initFirebase();
-
-// ===== SERVICE WORKER =====
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js').catch(()=>{});
-}
 </script>
+<!-- PANEL SYNC -->
+<div id="sync-panel" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:white;border-radius:20px;padding:1.5rem;width:100%;max-width:360px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:#14532d;margin-bottom:.3rem;">☁️ Sincronización en la nube</div>
+    <div style="font-size:14px;color:#6b7280;margin-bottom:1.2rem;line-height:1.5;">Mismo código en todos los dispositivos para compartir datos automáticamente.</div>
+    <label style="font-size:13px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px;">Código familiar</label>
+    <input id="sync-code-inp" type="text" placeholder="ej: garcia2025" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+      style="width:100%;border:2px solid #bbf7d0;border-radius:12px;padding:12px 14px;font-size:17px;font-weight:700;font-family:'DM Sans',sans-serif;color:#14532d;background:#f0fdf4;outline:none;margin-bottom:.5rem;"/>
+    <div style="font-size:12px;color:#9ca3af;margin-bottom:1.2rem;">⚠️ Elige algo que solo conozcáis vosotros.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <button onclick="cerrarPanelSync()" style="padding:12px;border-radius:12px;border:2px solid #e5e7eb;background:white;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;color:#6b7280;cursor:pointer;">Cancelar</button>
+      <button onclick="activarSync()" style="padding:12px;border-radius:12px;border:none;background:linear-gradient(135deg,#14532d,#16a34a);font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;color:white;cursor:pointer;">Conectar</button>
+    </div>
+    <button id="sync-desconectar-btn" onclick="desconectarSync()" style="display:none;width:100%;margin-top:.6rem;padding:10px;border-radius:12px;border:2px solid #fecaca;background:#fff5f5;font-size:14px;font-weight:700;font-family:'DM Sans',sans-serif;color:#dc2626;cursor:pointer;">Desconectar</button>
+    <div id="sync-estado" style="margin-top:.8rem;font-size:13px;font-weight:600;text-align:center;min-height:20px;color:#16a34a;"></div>
+  </div>
+</div>
 </body>
 </html>
